@@ -12,7 +12,7 @@ pipelineJob("dsl-jobs/packer-test") {
 			scm {
 				git {
 					remote {
-						url("https://github.com/andycockers/gcp-automation")
+						url("git@github.com:andycockers/jenkins-dsl.git")
 						credentials("andycockers")
 					}
 					branch("*/master")
