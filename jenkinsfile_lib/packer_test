@@ -16,7 +16,7 @@ pipeline {
           containers:
           - name: packer
             image: calmmopey/alpine-python3-deps
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
             - cat
             tty: true
