@@ -13,9 +13,9 @@ pipelineJob("dsl-jobs/packer-test") {
 				git {
 					remote {
 						url("git@github.com:andycockers/jenkins-dsl.git")
-						credentials("andycockers")
+						credentials("github-3")
 					}
-					branch("*/master")
+					branch("*/main")
 				}
 			}
 			scriptPath("jenkinsfile_lib/packer_test")
