@@ -31,9 +31,9 @@ pipeline {
   }
 
   options {
-		credentialsBinding {
+		credentialsBinding 
 			string("ansible_vault", "VAULT")
-    }
+    
   }
 
 
