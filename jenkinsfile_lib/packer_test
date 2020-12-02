@@ -33,6 +33,7 @@ pipeline {
   wrappers {
 		credentialsBinding {
 			string("ansible_vault", "VAULT")
+    }
 
 
   stages {
