@@ -30,6 +30,10 @@ pipeline {
     string(name: 'SERVER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type')
   }
 
+  wrappers {
+		credentialsBinding {
+			string("ansible_vault", "VAULT")
+
 
   stages {
     stage('Initialisation') {
