@@ -35,7 +35,7 @@ pipeline {
     stage('Initialisation') {
       steps {
         container('packer') {
-          echo "Token is ${TOKEN}"
+          
           
           packer_test()
         }
