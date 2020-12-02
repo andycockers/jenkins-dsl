@@ -25,7 +25,6 @@ pipeline {
   }
 
   parameters {
-    string(name: 'TOKEN', defaultValue: 'iEcABqtji7a9mx1YZ7P2WDMlkucvpYVNeFbVQjGBZb13H9Ns89GYyq5n8VM2xMHz', description: 'The hcloud token')
     string(name: 'LOCATION', defaultValue: 'nbg1', description: 'The location of the hcloud server')
     string(name: 'SERVER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type')
   }
