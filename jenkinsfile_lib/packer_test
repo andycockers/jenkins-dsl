@@ -31,9 +31,9 @@ pipeline {
   }
 
   wrappers {
-		credentialsBinding {
+		credentialsBinding 
 			string("ansible_vault", "BLAH")
-		}
+		
 	}
 
 
