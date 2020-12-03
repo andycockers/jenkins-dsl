@@ -1,8 +1,9 @@
 def call () {
     script {
-        checkout([$class: 'GitSCM', branches: [[name: "*/master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: "git@github.com:andycockers/gcp-automation.git"]]]) 
-        withCredentials([string(credentialsId: 'hetzner', variable: 'TOKEN'), string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
-        sh "cd packer/install-jenkins-deps-hetzner && echo $VAULT > password && packer build install-jenkins-deps-hetzner.yml"
+        checkout([$class: 'GitSCM', branches: [[name: "*/master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: "git@github.com:andycockers/kubernetes.git"]]]) 
+        withCredentials([string(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+        sh "cd terratest/gcp/service-account && go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform"
+        sh "cd terratest/gcp/service-account && go test"
 }
         
         
