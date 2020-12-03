@@ -13,7 +13,7 @@ pipelineJob("dsl-jobs/packer-test") {
 				git {
 					remote {
 						url("git@github.com:andycockers/jenkins-dsl.git")
-						credentials("github-3")
+						credentials("github")
 					}
 					branch("*/main")
 				}
