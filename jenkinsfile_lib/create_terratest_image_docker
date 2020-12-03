@@ -26,6 +26,7 @@ pipeline {
             hostPath:
               path: /var/run/docker.sock
         """ }
+  }
   
   stages {
     stage('Initialisation') {
@@ -39,4 +40,5 @@ pipeline {
       }
     }
   }
+}
 
