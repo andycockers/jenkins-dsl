@@ -1,0 +1,19 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent { label 'swarm' }
+  
+  stages {
+    stage('Initialisation') {
+      steps {
+        
+          
+          create_docker_docker_image()
+        }
+      }
+    }
+  }
+
