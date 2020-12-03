@@ -15,7 +15,7 @@ pipeline {
       steps {
         
           
-          packer_test()
+          create_terratest_image()
         }
       }
     }
