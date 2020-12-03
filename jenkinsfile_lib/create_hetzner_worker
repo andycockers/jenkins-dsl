@@ -36,7 +36,7 @@ pipeline {
         container('packer') {
           
           
-          packer_test()
+          create_hetzner_worker()
         }
       }
     }

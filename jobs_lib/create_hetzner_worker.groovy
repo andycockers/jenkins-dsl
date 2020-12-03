@@ -1,4 +1,4 @@
-pipelineJob("dsl-jobs/packer-test") {
+pipelineJob("dsl-jobs/create-hetzner-worker") {
 	description()
 	keepDependencies(false)
 
@@ -18,7 +18,7 @@ pipelineJob("dsl-jobs/packer-test") {
 					branch("*/main")
 				}
 			}
-			scriptPath("jenkinsfile_lib/packer_test")
+			scriptPath("jenkinsfile_lib/create_hetzner_worker")
 		}
 	}
 	disabled(false)
