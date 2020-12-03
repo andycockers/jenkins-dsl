@@ -15,7 +15,7 @@ pipeline {
         spec:
           containers:
           - name: docker-jenkins-agent
-            image: calmmopey/docker-packer
+            image: calmmopey/docker-docker
             command:
             - cat
             tty: true
