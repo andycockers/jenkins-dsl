@@ -1,0 +1,42 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent { kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: docker-jenkins-agent
+            image: calmmopey/docker-docker
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock
+        """ }
+  
+  stages {
+    stage('Initialisation') {
+      steps {
+        container('docker-jenkins-agent') {
+      
+        
+          
+          create_terratest_image_docker()
+        }
+      }
+    }
+  }
+
