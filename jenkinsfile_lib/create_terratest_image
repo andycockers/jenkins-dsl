@@ -4,6 +4,11 @@
 @Library('jenkins-dsl')_
 
 pipeline {
+  agent {
+    node {
+      label 'swarm'
+    }
+  }
   
   stages {
     stage('Initialisation') {
