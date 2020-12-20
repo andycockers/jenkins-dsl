@@ -1,0 +1,40 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent {
+    kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: terratest
+            image: calmmopey/terratest-terraform
+            imagePullPolicy: IfNotPresent
+            command:
+            - cat
+            tty: true
+        """
+    }
+  }
+
+  stages {
+    stage('Code Checkout from GitHub') {
+      steps {
+        container('terratest') {
+          checkout([$class: 'GitSCM', branches: [[name: "*/master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: "git@github.com:andycockers/kubernetes.git"]]]) 
+        withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS')])
+           
+          
+        }
+      }
+    }
+  }
+
+}
