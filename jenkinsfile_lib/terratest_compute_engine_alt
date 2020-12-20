@@ -26,11 +26,13 @@ pipeline {
 
   stages {
     stage('Code Checkout from GitHub') {
-      steps {
+      steps { 
+        {
+        script
         container('terratest') {
           checkout([$class: 'GitSCM', branches: [[name: "*/master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: "git@github.com:andycockers/kubernetes.git"]]]) 
         withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS')])
-           
+        }
           
         }
       }
