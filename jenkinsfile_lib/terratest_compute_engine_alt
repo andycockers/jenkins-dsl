@@ -26,19 +26,11 @@ pipeline {
 
   stages {
     stage('Code Checkout from GitHub') {
-      steps { 
-        {
-        script {
-        checkout([$class: 'GitSCM', branches: [[name: "*/master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: "git@github.com:andycockers/kubernetes.git"]]]) 
-        withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-        sh "cd terratest/gcp/compute-instance && go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform"
-        sh "cd terratest/gcp/compute-instance && go test"
-}
-        
-        
-    }
-    }
-  }
+      steps {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+            }
 
 }
   }
