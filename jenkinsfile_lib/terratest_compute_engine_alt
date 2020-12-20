@@ -46,8 +46,10 @@ pipeline {
     stage('Run Terratest') {
       steps {
         container('terratest') {
+          withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
         sh "cd terratest/gcp/compute-instance && go test"
       }
+        }
       }
     }
   }
