@@ -28,15 +28,18 @@ pipeline {
     stage('Code Checkout from GitHub') {
       steps { 
         {
-        script
-        container('terratest') {
-          checkout([$class: 'GitSCM', branches: [[name: "*/master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: "git@github.com:andycockers/kubernetes.git"]]]) 
-        withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS')])
-        }
-          
-        }
-      }
+        script {
+        checkout([$class: 'GitSCM', branches: [[name: "*/master"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: "git@github.com:andycockers/kubernetes.git"]]]) 
+        withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+        sh "cd terratest/gcp/compute-instance && go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform"
+        sh "cd terratest/gcp/compute-instance && go test"
+}
+        
+        
+    }
     }
   }
 
+}
+  }
 }
