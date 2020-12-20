@@ -31,7 +31,18 @@ pipeline {
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
             }
-
 }
+
+    stage('Initialise Terratest') {
+      steps {
+        sh "cd terratest/gcp/compute-instance && go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform"
+      }
+    }
+
+    stage('Run Terratest') {
+      steps {
+        sh "cd terratest/gcp/compute-instance && go test"
+      }
+    }
   }
 }
