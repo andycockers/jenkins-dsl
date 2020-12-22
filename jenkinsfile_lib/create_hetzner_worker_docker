@@ -36,8 +36,8 @@ pipeline {
   }
 
   environment {
-    "LOCATION"    = "${params.LOCATION}"
-    "SERVER_TYPE" = "${params.SERVER_TYPE}"
+    "LOCATION"    = ${params.LOCATION}
+    "SERVER_TYPE" = ${params.SERVER_TYPE}
   }
 
 
