@@ -35,6 +35,11 @@ pipeline {
     string(name: 'SERVER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type')
   }
 
+  environment {
+    LOCATION    = 'nbg1'
+    SERVER_TYPE = 'cx11'
+  }
+
 
   stages {
     stage('Code Checkout from GitHub') {
