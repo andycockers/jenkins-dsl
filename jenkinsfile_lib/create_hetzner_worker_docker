@@ -35,12 +35,7 @@ pipeline {
     string(name: 'SERVER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type')
   }
 
-  environment {
-    "LOCATION"    = params.LOCATION
-    "SERVER_TYPE" = params.SERVER_TYPE
-  }
-
-
+  
   stages {
     stage('Code Checkout from GitHub') {
       steps {
@@ -56,7 +51,7 @@ stage('Run Packer') {
       steps {
         container('docker-jenkins-agent') {
         withCredentials([string(credentialsId: 'hetzner', variable: 'TOKEN'), string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
-        sh "cd packer/install-jenkins-deps-hetzner && echo $VAULT > password && packer build install-jenkins-deps-hetzner.yml"
+        sh "cd packer/install-jenkins-deps-hetzner && echo $VAULT > password && packer build install-jenkins-deps-hetzner.yml -var $LOCATION -var $SERVER_TYPE"
 }
       }
       }
