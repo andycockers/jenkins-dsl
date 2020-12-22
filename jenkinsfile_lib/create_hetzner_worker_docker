@@ -36,8 +36,8 @@ pipeline {
   }
 
   environment {
-    LOCATION    = 'nbg1'
-    SERVER_TYPE = 'cx11'
+    LOCATION    = $LOCATION
+    SERVER_TYPE = $SERVER_TYPE
   }
 
 
