@@ -36,8 +36,8 @@ pipeline {
   }
 
   environment {
-    LOCATION    = 'LOCATION'
-    SERVER_TYPE = 'SERVER_TYPE'
+    "LOCATION"    = $LOCATION
+    "SERVER_TYPE" = $SERVER_TYPE
   }
 
 
