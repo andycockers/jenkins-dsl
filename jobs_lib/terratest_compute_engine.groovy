@@ -1,4 +1,4 @@
-pipelineJob("terratest/terratest-compute-engine-alt") {
+pipelineJob("terratest/terratest-compute-engine") {
 	description()
 	keepDependencies(false)
 
@@ -18,7 +18,7 @@ pipelineJob("terratest/terratest-compute-engine-alt") {
 					branch("*/main")
 				}
 			}
-			scriptPath("jenkinsfile_lib/terratest_compute_engine_alt")
+			scriptPath("jenkinsfile_lib/terratest_compute_engine")
 		}
 	}
 	disabled(false)
