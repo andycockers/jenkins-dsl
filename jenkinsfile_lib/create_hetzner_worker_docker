@@ -37,13 +37,23 @@ pipeline {
 
 
   stages {
-    stage('Initialisation') {
+    stage('Code Checkout from GitHub') {
       steps {
         container('docker-jenkins-agent') {
-          
-          
-          create_hetzner_worker_docker()
+              git branch: "master",
+              credentialsId: "github",
+              url: "git@github.com:andycockers/gcp-automation.git"
         }
+            }
+}
+
+stage('Run Packer') {
+      steps {
+        container('docker-jenkins-agent') {
+        withCredentials([string(credentialsId: 'hetzner', variable: 'TOKEN'), string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
+        sh "cd packer/install-jenkins-deps-hetzner && echo $VAULT > password && packer build install-jenkins-deps-hetzner.yml"
+}
+      }
       }
     }
   }
