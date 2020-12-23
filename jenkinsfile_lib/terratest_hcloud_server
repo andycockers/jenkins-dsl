@@ -46,7 +46,7 @@ pipeline {
     stage('Run Terratest') {
       steps {
         container('terratest') {
-          withCredentials([string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+          withCredentials([string(credentialsId: 'hetzner', variable: 'HCLOUD_TOKEN')]) {
         sh "cd terratest/hetzner/hcloud-server && go test"
       }
         }
