@@ -7,3 +7,8 @@ folder('terratest') {
     displayName('Terratest')
     description('Terratst Jobs')
 }
+
+folder('terraform') {
+    displayName('Terraform')
+    description('Terraform Jobs')
+}
