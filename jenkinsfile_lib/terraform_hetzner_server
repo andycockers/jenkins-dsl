@@ -39,7 +39,7 @@ pipeline {
       steps {
         container('terratest') {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-            sh "cd terraform/hetzner-server && terraform init"
+            sh "cd terraform/hetzner-server && terraform init -var='hcloud_token=$hcloud_token'"
           }
         
       }
@@ -50,7 +50,7 @@ pipeline {
       steps {
         container('terratest') {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-        sh "cd terraform/hetzner-server && terraform plan"
+        sh "cd terraform/hetzner-server && terraform plan -var='hcloud_token=$hcloud_token'"
       }
         }
       }
