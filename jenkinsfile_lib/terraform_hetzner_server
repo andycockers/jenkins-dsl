@@ -60,7 +60,7 @@ pipeline {
       steps {
         container('terratest') {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
-        sh "cd terraform/hetzner-server && terraform apply --auto-approve"
+        sh "cd terraform/hetzner-server && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'"
       }
         }
       }
