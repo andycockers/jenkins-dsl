@@ -1,0 +1,69 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent {
+    kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: terratest
+            image: calmmopey/terratest-terraform
+            imagePullPolicy: IfNotPresent
+            command:
+            - cat
+            tty: true
+        """
+    }
+  }
+
+  stages {
+    stage('Code Checkout from GitHub') {
+      steps {
+        container('terratest') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+        }
+            }
+}
+
+    stage('Terraform init') {
+      steps {
+        container('terratest') {
+          withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+            sh "cd terraform/hetzner-server && terraform init -var='hcloud_token=$hcloud_token'"
+          }
+        
+      }
+      }
+    }
+
+    stage('Terraform plan') {
+      steps {
+        container('terratest') {
+          withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+        sh "cd terraform/hetzner-server && terraform plan -var='hcloud_token=$hcloud_token'"
+      }
+        }
+      }
+    }
+
+    stage('Terraform apply') {
+      steps {
+        container('terratest') {
+          withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+        sh "cd terraform/hetzner-server && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'"
+      }
+        }
+      }
+    }
+  }
+}
