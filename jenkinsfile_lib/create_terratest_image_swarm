@@ -4,7 +4,7 @@
 @Library('jenkins-dsl')_
 
 pipeline {
-  agent swarm
+  agent { label 'swarm' }
   
   
   stages {
