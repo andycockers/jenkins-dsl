@@ -4,7 +4,7 @@
 @Library('jenkins-dsl')_
 
 pipeline {
-  agent any
+  agent swarm
   
   
   stages {
