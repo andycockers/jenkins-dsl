@@ -24,6 +24,26 @@ pipeline {
     }
   }
 
+  agent {
+    kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: ansible
+            image: wolfman.crabdance.com/ansible
+            imagePullPolicy: IfNotPresent
+            command:
+            - cat
+            tty: true
+        """
+    }
+  }
+
   stages {
     stage('Code Checkout from GitHub') {
       steps {
@@ -77,6 +97,27 @@ pipeline {
         }
         sh "echo $BLAH"
 
+      }
+        }
+      }
+    }
+
+    stage('Code Checkout from GitHub') {
+      steps {
+        container('ansible') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/gcp-automation"
+        }
+            }
+}
+
+    stage('Ansible configure server') {
+      steps {
+        container('ansible') {
+          withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER'))] {
+        sh "echo $HETZNER > hetzner"
+        sh "ssh -i hetzner root@$BLAH"
       }
         }
       }
