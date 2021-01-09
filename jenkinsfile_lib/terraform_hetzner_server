@@ -70,8 +70,8 @@ pipeline {
       steps {
         container('terratest') {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
-        sh "cd terraform/hetzner-server && terraform output ipv4_address > ../../ipv4_address.txt"
-        sh "cat ipv4_address.txt"
+        sh "cd terraform/hetzner-server && echo -n blah= > ipv4_address.txt && terraform output ipv4_address >> ipv4_address.txt"
+        sh "cd terraform/hetzner-server && cat ipv4_address.txt"
       }
         }
       }
@@ -82,12 +82,6 @@ pipeline {
         container('terratest') {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
         sh "cd terraform/hetzner-server && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
-        script {
-                    env.LS = sh(script:'`cat ipv4_address.txt`', returnStdout: true).trim()
-                    echo "LS = ${env.LS}"
-                    // or if you access env variable in the shell command
-                    // sh 'echo $LS'
-                }
       }
         }
       }
