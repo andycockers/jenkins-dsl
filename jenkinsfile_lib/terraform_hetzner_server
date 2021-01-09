@@ -136,8 +136,8 @@ pipeline {
       steps {
         container('ansible') {
           withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
-        sh "echo $HETZNER > hetzner && chmod 600 hetzner && cat hetzner"
-        sh "ssh -i hetzner root@$BLAH"
+        sh "cat ${HETZNER}"
+        //maybesh "ssh -i hetzner root@$BLAH"
       }
         }
       }
