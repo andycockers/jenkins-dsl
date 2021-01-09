@@ -137,7 +137,7 @@ pipeline {
         container('ansible') {
           withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
         sh "cat ${HETZNER}"
-        //maybesh "ssh -i hetzner root@$BLAH"
+        sh "ssh -i ${HETZNER} root@$BLAH"
       }
         }
       }
