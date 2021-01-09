@@ -73,6 +73,7 @@ pipeline {
         sh "cd terraform/hetzner-server && terraform output ipv4_address > ipv4_address.txt"
         sh "cd terraform/hetzner-server && cat ipv4_address.txt"
         sh "cd terraform/hetzner-server && export blah=`cat ipv4_address.txt`"
+        sh "echo $blah"
       }
         }
       }
