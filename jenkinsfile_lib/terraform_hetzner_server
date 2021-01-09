@@ -115,7 +115,7 @@ pipeline {
     stage('Ansible configure server') {
       steps {
         container('ansible') {
-          withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER'))] {
+          withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
         sh "echo $HETZNER > hetzner"
         sh "ssh -i hetzner root@$BLAH"
       }
