@@ -88,6 +88,7 @@ pipeline {
         container('terratest') {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
         sh "cd terraform/hetzner-server && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
+        sh "echo $BLAH"
       }
         }
       }
