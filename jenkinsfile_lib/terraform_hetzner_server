@@ -83,7 +83,7 @@ pipeline {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
         sh "cd terraform/hetzner-server && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
         script {
-          env.BLAH = "kaka"
+          env.BLAH = "`cat ipv4_address.txt`"
         }
         echo "${env.BLAH}"
       }
