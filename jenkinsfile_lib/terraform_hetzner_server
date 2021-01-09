@@ -24,25 +24,7 @@ pipeline {
     }
   }
 
-  agent {
-    kubernetes {
-      yaml """
-        apiVersion: v1
-        kind: Pod
-        metadata:
-          labels:
-            jenkins: build
-        spec:
-          containers:
-          - name: ansible
-            image: wolfman.crabdance.com/ansible
-            imagePullPolicy: IfNotPresent
-            command:
-            - cat
-            tty: true
-        """
-    }
-  }
+  
 
   stages {
     stage('Code Checkout from GitHub') {
@@ -103,6 +85,25 @@ pipeline {
     }
 
     stage('Ansible Checkout from GitHub') {
+      agent {
+    kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: ansible
+            image: wolfman.crabdance.com/ansible
+            imagePullPolicy: IfNotPresent
+            command:
+            - cat
+            tty: true
+        """
+    }
+  }
       steps {
         container('ansible') {
               git branch: "master",
@@ -113,6 +114,25 @@ pipeline {
 }
 
     stage('Ansible configure server') {
+      agent {
+    kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: ansible
+            image: wolfman.crabdance.com/ansible
+            imagePullPolicy: IfNotPresent
+            command:
+            - cat
+            tty: true
+        """
+    }
+  }
       steps {
         container('ansible') {
           withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
