@@ -71,7 +71,6 @@ pipeline {
         container('terratest') {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
         sh "cd terraform/hetzner-server && echo -n BLAH= > ipv4_address.txt && terraform output -json ipv4_address >> ipv4_address.txt"
-        sh "cd terraform/hetzner-server && cat ipv4_address.txt"
         script {
             def props = readProperties file: 'terraform/hetzner-server/ipv4_address.txt'
             env.BLAH = props.BLAH
@@ -88,7 +87,6 @@ pipeline {
         container('terratest') {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
         sh "cd terraform/hetzner-server && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
-        sh "echo $BLAH"
       }
         }
       }
