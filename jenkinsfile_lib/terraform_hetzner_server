@@ -102,7 +102,7 @@ pipeline {
       }
     }
 
-    stage('Code Checkout from GitHub') {
+    stage('Ansible Checkout from GitHub') {
       steps {
         container('ansible') {
               git branch: "master",
