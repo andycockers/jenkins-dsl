@@ -79,7 +79,7 @@ pipeline {
 
     stage('Terraform destroy') {
       environment {
-        sh "cd terraform/hetzner-server && export blah=`cat ipv4_address.txt`"
+         blah=`cat terraform/hetzner-server/ipv4_address.txt`
       }
       steps {
         container('terratest') {
