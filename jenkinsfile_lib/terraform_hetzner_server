@@ -82,10 +82,12 @@ pipeline {
         container('terratest') {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
         sh "cd terraform/hetzner-server && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
-        environment {
-        BLAH = "${sh(script:'`cat ipv4_address.txt`', returnStdout: true).trim()}"
-    }
-        echo "${env.BLAH}"
+        script {
+                    env.LS = sh(script:'ls -lah', returnStdout: true).trim()
+                    echo "LS = ${env.LS}"
+                    // or if you access env variable in the shell command
+                    sh 'echo $LS'
+                }
       }
         }
       }
