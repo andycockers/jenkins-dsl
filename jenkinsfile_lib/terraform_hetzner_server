@@ -7,6 +7,9 @@ pipeline {
 
   stages {
     stage('Code Checkout from GitHub') {
+      agent {
+    label "terratest" 
+  }
       steps {
         container('terratest') {
               git branch: "master",
