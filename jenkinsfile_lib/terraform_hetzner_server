@@ -7,7 +7,7 @@ pipeline {
   agent none
 
   stages {
-    stage('Code Checkout from GitHub') {
+    stage('Terraform Create Server') {
       agent {
     label "terratest" 
   }
@@ -18,62 +18,27 @@ pipeline {
               url: "https://github.com/andycockers/kubernetes"
               withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hetzner-server && terraform init -var='hcloud_token=$hcloud_token'"
-          }
-        }
-            }
-}
-
-    stage('Terraform init') {
-      agent {
-    label "terratest" 
-  }
-      steps {
-        container('terratest') {
-          withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
-            sh "cd terraform/hetzner-server && terraform init -var='hcloud_token=$hcloud_token'"
-          }
-        
-      }
-      }
-    }
-
-    stage('Terraform plan') {
-      steps {
-        container('terratest') {
-          withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
-        sh "cd terraform/hetzner-server && terraform plan -var='hcloud_token=$hcloud_token'"
-      }
-        }
-      }
-    }
-
-    stage('Terraform apply') {
-      steps {
-        container('terratest') {
-          withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
-        sh "cd terraform/hetzner-server && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'"
-      }
-        }
-      }
-    }
-
-    stage('Set ip address as an env var') {
-      steps {
-        container('terratest') {
-          withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
-        sh "cd terraform/hetzner-server && echo -n BLAH= > ipv4_address.txt && terraform output -json ipv4_address >> ipv4_address.txt"
+            sh "cd terraform/hetzner-server && terraform plan -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hetzner-server && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hetzner-server && echo -n BLAH= > ipv4_address.txt && terraform output -json ipv4_address >> ipv4_address.txt"
         script {
             def props = readProperties file: 'terraform/hetzner-server/ipv4_address.txt'
             env.BLAH = props.BLAH
         }
         sh "echo $BLAH"
-
-      }
+          }
         }
-      }
-    }
+            }
+}
 
-    stage('Ansible Checkout from GitHub') {
+   
+    
+
+    
+
+    
+
+    stage('Ansible Configure Server') {
       agent {
     label "ansible" 
   }
@@ -82,25 +47,24 @@ pipeline {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
+              withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
+        sh "ssh -o StrictHostKeyChecking=no -i ${HETZNER} root@$BLAH"
+      }
         }
             }
 }
 
-    stage('Ansible configure server') {
-      agent {
-    label "ansible" 
-  }
-      steps {
-          withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
-        sh "ssh -o StrictHostKeyChecking=no -i ${HETZNER} root@$BLAH"
-      }
-        
-      }
-    }
+    
 
     stage('Terraform destroy') {
+      agent {
+    label "terratest" 
+  }
       steps {
         container('terratest') {
+          git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
         sh "cd terraform/hetzner-server && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
       }
