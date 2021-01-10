@@ -5,26 +5,8 @@
 
 pipeline {
   agent {
-    kubernetes {
-      yaml """
-        apiVersion: v1
-        kind: Pod
-        metadata:
-          labels:
-            jenkins: build
-        spec:
-          containers:
-          - name: terratest
-            image: calmmopey/terratest-terraform
-            imagePullPolicy: IfNotPresent
-            command:
-            - cat
-            tty: true
-        """
-    }
+    label "terratest" 
   }
-
-  
 
   stages {
     stage('Code Checkout from GitHub') {
@@ -86,23 +68,7 @@ pipeline {
 
     stage('Ansible Checkout from GitHub') {
       agent {
-    kubernetes {
-      yaml """
-        apiVersion: v1
-        kind: Pod
-        metadata:
-          labels:
-            jenkins: build
-        spec:
-          containers:
-          - name: ansible
-            image: wolfman.crabdance.com/ansible
-            imagePullPolicy: IfNotPresent
-            command:
-            - cat
-            tty: true
-        """
-    }
+    label "ansible" 
   }
       steps {
         container('ansible') {
