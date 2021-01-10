@@ -20,12 +20,12 @@ pipeline {
             sh "cd terraform/hetzner-server && terraform init -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hetzner-server && terraform plan -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hetzner-server && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'"
-            sh "cd terraform/hetzner-server && echo -n BLAH= > ipv4_address.txt && terraform output -json ipv4_address >> ipv4_address.txt"
+            sh "cd terraform/hetzner-server && echo -n SERVER= > ipv4_address.txt && terraform output -json ipv4_address >> ipv4_address.txt"
         script {
-            def props = readProperties file: 'terraform/hetzner-server/ipv4_address.txt'
-            env.BLAH = props.BLAH
+            def server = readProperties file: 'terraform/hetzner-server/ipv4_address.txt'
+            env.SERVER = server.SERVER
         }
-        sh "echo $BLAH"
+        sh "echo $SERVER"
           }
         }
             }
@@ -41,7 +41,7 @@ pipeline {
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
               withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
-        sh "ssh -o StrictHostKeyChecking=no -i ${HETZNER} root@$BLAH"
+        sh "ssh -o StrictHostKeyChecking=no -i ${HETZNER} root@$SERVER"
       }
         }
             }
