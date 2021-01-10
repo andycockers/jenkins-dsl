@@ -31,13 +31,6 @@ pipeline {
             }
 }
 
-   
-    
-
-    
-
-    
-
     stage('Ansible Configure Server') {
       agent {
     label "ansible" 
@@ -54,8 +47,6 @@ pipeline {
             }
 }
 
-    
-
     stage('Terraform destroy') {
       agent {
     label "terratest" 
@@ -66,6 +57,7 @@ pipeline {
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+        sh "cd terraform/hetzner-server && terraform init -var='hcloud_token=$hcloud_token'"
         sh "cd terraform/hetzner-server && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
       }
         }
