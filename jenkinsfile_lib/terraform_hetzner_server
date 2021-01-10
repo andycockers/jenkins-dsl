@@ -118,11 +118,11 @@ pipeline {
     label "ansible" 
   }
       steps {
-        container('ansible') {
+        
           withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
         sh "ssh -o StrictHostKeyChecking=no -i ${HETZNER} root@$BLAH"
       }
-        }
+        
       }
     }
 
