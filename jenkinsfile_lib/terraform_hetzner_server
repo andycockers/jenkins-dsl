@@ -40,8 +40,8 @@ pipeline {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
-              withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
-        sh "cd ansible && ansible-playbook -i $SERVER, --key-file $HETZNER -u root install-terraform.yml"
+              withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER'), string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
+        sh "cd ansible && ansible-playbook -i $SERVER, --key-file $HETZNER -u root install-swarm-client.yml"
       }
         }
             }
