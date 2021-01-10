@@ -4,9 +4,6 @@
 @Library('jenkins-dsl')_
 
 pipeline {
-  agent {
-    label "terratest" 
-  }
 
   stages {
     stage('Code Checkout from GitHub') {
@@ -20,6 +17,9 @@ pipeline {
 }
 
     stage('Terraform init') {
+      agent {
+    label "terratest" 
+  }
       steps {
         container('terratest') {
           withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
