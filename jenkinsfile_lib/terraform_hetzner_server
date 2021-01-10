@@ -41,7 +41,8 @@ pipeline {
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
               withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER'), string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
-        sh "cd ansible && ansible-playbook -i $SERVER, --key-file $HETZNER -u root install-swarm-client.yml --vault-pass $VAULT"
+        sh "cd ansible && echo $VAULT > vault"        
+        sh "cd ansible && ansible-playbook -i $SERVER, --key-file $HETZNER -u root install-swarm-client.yml --vault-password-file vault"
       }
         }
             }
