@@ -114,7 +114,9 @@ pipeline {
 }
 
     stage('Ansible configure server') {
-      
+      agent {
+    label "ansible" 
+  }
       steps {
         container('ansible') {
           withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
