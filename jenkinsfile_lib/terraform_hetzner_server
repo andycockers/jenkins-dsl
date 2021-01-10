@@ -137,7 +137,7 @@ pipeline {
         container('ansible') {
           withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
         sh "printenv HETZNER >KEY"
-        sh "ssh -i KEY root@$BLAH"
+        sh "ssh -o StrictHostKeyChecking=no -i KEY root@$BLAH"
         sh "cat KEY"
       }
         }
