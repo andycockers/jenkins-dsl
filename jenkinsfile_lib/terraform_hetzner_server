@@ -114,11 +114,11 @@ pipeline {
 }
 
     stage('Ansible configure server') {
-      agent {
-    label "ansible" 
-  }
+  //    agent {
+  //  label "ansible" 
+  //}
       steps {
-        
+        container('ansible') {
           withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
         sh "ssh -o StrictHostKeyChecking=no -i ${HETZNER} root@$BLAH"
       }
