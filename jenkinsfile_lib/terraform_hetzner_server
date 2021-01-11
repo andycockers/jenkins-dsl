@@ -54,7 +54,7 @@ pipeline {
 
       stage('Run a command on the new node'){
         steps{
-          node($SERVER_NAME){
+          node('$SERVER_NAME'){
           sh "ls -la"
         }
 
