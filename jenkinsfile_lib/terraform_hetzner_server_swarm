@@ -1,0 +1,89 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent none
+
+  stages {
+    stage('Terraform Create Server') {
+      agent {
+    label "oracle" 
+  }
+      steps {
+        node('oracle') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+              withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+            sh "cd terraform/hetzner-server && terraform init -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hetzner-server && terraform plan -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hetzner-server && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hetzner-server && echo -n SERVER= > ipv4_address.txt && terraform output -json ipv4_address >> ipv4_address.txt"
+            sh "cd terraform/hetzner-server && echo -n SERVER_NAME= > server_name.txt && terraform output -json server_name >> server_name.txt"
+        script {
+            def server = readProperties file: 'terraform/hetzner-server/ipv4_address.txt'
+            env.SERVER = server.SERVER
+        }
+        script {
+            def server_name = readProperties file: 'terraform/hetzner-server/server_name.txt'
+            env.SERVER_NAME = server_name.SERVER_NAME
+        }
+        sh "echo $SERVER_NAME"
+          }
+        }
+            }
+}
+
+    stage('Ansible Configure Server') {
+      agent {
+    label "oracle" 
+  }
+      steps {
+        node('oracle') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/gcp-automation"
+              withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER'), string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
+        sh "cd ansible && echo $VAULT > vault"        
+        sh "cd ansible && ansible-playbook -i $SERVER, --key-file $HETZNER -u root install-swarm-client.yml --vault-password-file vault"
+      }
+        }
+            }
+}
+
+    stage('Terraform destroy') {
+      agent {
+    label "oracle" 
+  }
+      steps {
+        node('oracle') {
+          git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+          withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+        sh "cd terraform/hetzner-server && terraform init -var='hcloud_token=$hcloud_token'"
+        sh "cd terraform/hetzner-server && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
+      }
+        }
+      }
+    }
+
+    stage('Delete node') {
+      agent {
+        label "oracle"
+      }
+
+      steps {
+        node('oracle') {
+        withCredentials([string(credentialsId: 'pipeline_token', variable: 'TOKEN')]) {
+        sh "curl https://dracula.crabdance.com/jnlpJars/jenkins-cli.jar --output jenkins-cli.jar"
+        sh "java -jar jenkins-cli.jar -s http://dracula.crabdance.com:30509 -auth andy:$TOKEN delete-node $SERVER_NAME"
+        }
+      }
+    }
+  }
+
+      }
+}
