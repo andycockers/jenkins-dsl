@@ -72,12 +72,13 @@ pipeline {
     label "master" 
   }
       
-        
+        steps {
         withCredentials([string(credentialsId: 'pipeline_token', variable: 'TOKEN')]) {
         sh "wget https://dracula.crabdance.com/jnlpJars/jenkins-cli.jar"
         sh "java -jar jenkins-cli.jar -s http://dracula.crabdance.com:30509 -auth andy:$TOKEN delete-node $SERVER_NAME"
         }
       
+    }
     }
       }
   }
