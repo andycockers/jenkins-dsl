@@ -4,15 +4,15 @@
 @Library('jenkins-dsl')_
 
 pipeline {
-  agent none
+  agent {
+    label "worker" 
+  }
 
   stages {
     stage('Terraform Create Server') {
-      agent {
-    label "terratest" 
-  }
+      
       steps {
-        container('terratest') {
+        container('worker') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
