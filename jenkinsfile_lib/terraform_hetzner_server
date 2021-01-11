@@ -12,7 +12,7 @@ pipeline {
     stage('Terraform Create Server') {
       
       steps {
-        container('worker') {
+        
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
@@ -32,7 +32,7 @@ pipeline {
         }
         sh "echo $SERVER_NAME"
           }
-        }
+        
             }
 }
 
