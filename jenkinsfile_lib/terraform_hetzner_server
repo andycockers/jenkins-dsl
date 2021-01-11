@@ -28,7 +28,7 @@ pipeline {
         }
         script {
             def server_name = readProperties file: 'terraform/hetzner-server/server_name.txt'
-            env.SERVER_NAME = server.SERVER_NAME
+            env.SERVER_NAME = server_name.SERVER_NAME
         }
         sh "echo $SERVER_NAME"
           }
