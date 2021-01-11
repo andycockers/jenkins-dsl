@@ -72,7 +72,7 @@ pipeline {
 
     stage('Delete node') {
       agent {
-        label "swarm"
+        label "master"
       }
 
       steps {
