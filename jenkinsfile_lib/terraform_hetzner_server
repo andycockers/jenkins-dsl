@@ -47,11 +47,16 @@ pipeline {
         sh "cd ansible && echo $VAULT > vault"
         sh "sleep 10"
         sh "cd ansible && ansible-playbook -i $SERVER, --key-file $HETZNER -u root install-swarm-client.yml --vault-password-file vault -e SERVER_NAME=$SERVER_NAME"
-        sh "sleep 300"
       }
         }
             }
 }
+
+      stage('Run a command on the new node'){
+        node($SERVER_NAME){
+          sh "ls -la"
+        }
+      }
 
     stage('Terraform destroy') {
       
