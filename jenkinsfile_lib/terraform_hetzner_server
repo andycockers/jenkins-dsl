@@ -12,7 +12,7 @@ pipeline {
     stage('Terraform Create Server') {
       
       steps {
-        
+        container('worker') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
@@ -32,16 +32,14 @@ pipeline {
         }
         sh "echo $SERVER_NAME"
           }
-        
+        }
             }
 }
 
     stage('Ansible Configure Server') {
-      agent {
-    label "ansible" 
-  }
+      
       steps {
-        container('ansible') {
+        container('worker') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
@@ -54,11 +52,9 @@ pipeline {
 }
 
     stage('Terraform destroy') {
-      agent {
-    label "terratest" 
-  }
+      
       steps {
-        container('terratest') {
+        container('worker') {
           git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
@@ -71,11 +67,9 @@ pipeline {
     }
 
     stage('Delete node') {
-      agent {
-        label "oracle"
-      }
-
+      
       steps {
+        container('worker') {
         node('oracle') {
         withCredentials([string(credentialsId: 'pipeline_token', variable: 'TOKEN')]) {
         sh "curl https://dracula.crabdance.com/jnlpJars/jenkins-cli.jar --output jenkins-cli.jar"
@@ -83,6 +77,7 @@ pipeline {
         }
       }
     }
+      }
   }
 
       }
