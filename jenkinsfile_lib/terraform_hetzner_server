@@ -70,5 +70,18 @@ pipeline {
       }
     }
 
+    stage('Delete node') {
+      agent {
+        label "swarm"
+      }
+
+      steps {
+        withCredentials([file(credentialsId: 'pipeline_token', variable: 'TOKEN')]) {
+        sh "curl https://dracula.crabdance.com/jnlpJars/jenkins-cli.jar --output jenkins-cli.jar"
+        sh "java -jar jenkins-cli.jar -s https://dracula.crabdance.com -auth andy:$TOKEN -websocket delete-node $SERVER_NAME"
+        }
+      }
+    }
+
       }
 }
