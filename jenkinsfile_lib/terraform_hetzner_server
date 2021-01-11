@@ -53,9 +53,13 @@ pipeline {
 }
 
       stage('Run a command on the new node'){
-        node($SERVER_NAME){
+        steps{
+          node($SERVER_NAME){
           sh "ls -la"
         }
+
+        }
+        
       }
 
     stage('Terraform destroy') {
