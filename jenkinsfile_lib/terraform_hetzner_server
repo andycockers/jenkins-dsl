@@ -52,15 +52,15 @@ pipeline {
             }
 }
 
-      //stage('Run a command on the new node'){
-       // steps{
-        //  node('$SERVER_NAME'){
-         // sh "ls -la"
-       // }
+      stage('Run a command on the new node'){
+        steps{
+          node(env{$SERVER_NAME}){
+          sh "ls -la"
+        }
 
-        //}
+        }
         
-      //}
+      }
 
     stage('Terraform destroy') {
       
