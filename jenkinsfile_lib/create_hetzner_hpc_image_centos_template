@@ -1,0 +1,61 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent {
+    kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: docker-jenkins-agent
+            image: calmmopey/docker-docker
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock
+        """
+    }
+  }
+
+  parameters {
+    string(name: 'LOCATION', defaultValue: 'nbg1', description: 'The location of the hcloud server')
+    string(name: 'SERVER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type')
+  }
+
+  
+  stages {
+    stage('Code Checkout from GitHub') {
+      steps {
+        container('docker-jenkins-agent') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "git@github.com:andycockers/gcp-automation.git"
+        }
+            }
+}
+
+stage('Run Packer') {
+      steps {
+        container('docker-jenkins-agent') {
+        withCredentials([string(credentialsId: 'hetzner', variable: 'TOKEN'), string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
+        sh "cd packer/create-hetzner-hpc-image-centos-template && echo $VAULT > password && packer build -var LOCATION=$LOCATION -var SERVER_TYPE=$SERVER_TYPE create-hetzner-hpc-image-centos-template.yml"
+}
+      }
+      }
+    }
+  }
+
+}
