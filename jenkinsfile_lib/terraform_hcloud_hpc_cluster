@@ -92,6 +92,7 @@ stage('Terraform Get the Manager node internal IP') {
             def worker_ips = readProperties file: 'terraform/hetzner-hpc-worker/ipv4_address.txt'
             env.WORKER_IPS = worker_ips.WORKER_IPS
         }
+        archiveArtifacts artifacts: 'terraform/hetzner-hpc-worker/ipv4_address.txt', followSymlinks: false
           }
         }
             }
@@ -99,7 +100,7 @@ stage('Terraform Get the Manager node internal IP') {
 
     
       }
-      archiveArtifacts artifacts: 'terraform/hetzner-hpc-worker/ipv4_address.txt', followSymlinks: false
+      
   }
 
       
