@@ -50,8 +50,8 @@ pipeline {
 stage('Run Packer') {
       steps {
         container('docker-jenkins-agent') {
-        withCredentials([string(credentialsId: 'hetzner', variable: 'TOKEN')]) {
-        sh "cd packer/create-hetzner-hpc-image-template && packer build -var LOCATION=$LOCATION -var SERVER_TYPE=$SERVER_TYPE create-hetzner-hpc-image-template.yml"
+        withCredentials([string(credentialsId: 'hetzner', variable: 'TOKEN'), string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
+        sh "cd packer/create-hetzner-hpc-image-template && echo $VAULT > password && packer build -var LOCATION=$LOCATION -var SERVER_TYPE=$SERVER_TYPE create-hetzner-hpc-image-template.yml"
 }
       }
       }
