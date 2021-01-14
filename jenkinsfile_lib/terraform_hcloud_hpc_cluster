@@ -33,7 +33,7 @@ parameters {
             env.SERVER = server.SERVER
         }
         script {
-            def server_name = readProperties file: 'terraform/hetzner-hpc-manager/server_id.txt'
+            def server_id = readProperties file: 'terraform/hetzner-hpc-manager/server_id.txt'
             env.SERVER_ID = server_id.SERVER_ID
         }
           }
