@@ -98,6 +98,21 @@ stage('Terraform Get the Manager node internal IP') {
             }
     }
 
+    stage('Ansible Configure Worker VM(s)') {
+      
+      steps {
+        container('worker') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/gcp-automation"
+              withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
+        sh "sleep 10"
+        sh "cd ansible && ansible-playbook -i $WORKER_IPS, --key-file $HETZNER -u root configure-hpc-worker.yml -e MANAGER_IP=$MANAGER_INTERNAL_IP:/mnt/share"
+      }
+        }
+            }
+}
+
     
       }
       
