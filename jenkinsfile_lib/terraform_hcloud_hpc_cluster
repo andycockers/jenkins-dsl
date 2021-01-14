@@ -51,9 +51,9 @@ stage('Terraform Get the Manager node internal IP') {
               withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hcloud-server-network && terraform init -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hcloud-server-network && terraform apply --auto-approve -var='hcloud_token=$hcloud_token' -var='network_id=$NETWORK_ID' -var='server_id=$SERVER_ID'"
-            sh "cd terraform/hcloud-server-network && echo -n MANAGER_INTERNAL_IP= > manager_internal_ip.txt && terraform output -json internal_ip >> manager_internal_ip.txt"
+            sh "cd terraform/hcloud-server-network && echo -n MANAGER_INTERNAL_IP= > manager_internal_ip.txt && terraform output internal_ip >> manager_internal_ip.txt"
         script {
-            def server = readProperties file: 'terraform/hcloud-server-network/manager_internal_ip.txt'
+            def manager_internal_ip = readProperties file: 'terraform/hcloud-server-network/manager_internal_ip.txt'
             env.MANAGER_INTERNAL_IP = manager_internal_ip.MANAGER_INTERNAL_IP
         }
         
@@ -87,9 +87,9 @@ stage('Terraform Get the Manager node internal IP') {
               withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hetzner-hpc-worker && terraform init -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hetzner-hpc-worker && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'  -var='location=$LOCATION' -var='network_id=$NETWORK_ID' -var='server_type=$SERVER_TYPE'"
-            sh "cd terraform/hetzner-hpc-worker && echo -n WORKER_IPS= > ipv4_address.txt && terraform output -json ipv4_address | jq --raw-output 'join(\",\")' >> ipv4_address.txt"
+            sh "cd terraform/hetzner-hpc-worker && echo -n WORKER_IPS= > ipv4_address.txt && terraform output ipv4_address | jq --raw-output 'join(\",\")' >> ipv4_address.txt"
         script {
-            def server = readProperties file: 'terraform/hetzner-hpc-worker/ipv4_address.txt'
+            def worker_ips = readProperties file: 'terraform/hetzner-hpc-worker/ipv4_address.txt'
             env.WORKER_IPS = worker_ips.WORKER_IPS
         }
           }
