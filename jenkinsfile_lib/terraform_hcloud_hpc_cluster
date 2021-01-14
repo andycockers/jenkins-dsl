@@ -99,6 +99,7 @@ stage('Terraform Get the Manager node internal IP') {
 
     
       }
+      archiveArtifacts artifacts: 'terraform/hetzner-hpc-worker/ipv4_address.txt', followSymlinks: false
   }
 
       
