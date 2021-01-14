@@ -1,0 +1,104 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent {
+    label "worker" 
+  }
+
+parameters {
+    string(name: 'NETWORK_ID', defaultValue: '823122', description: 'The ID of the internal network')
+    string(name: 'SERVER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type')
+    string(name: 'LOCATION', defaultValue: 'nbg1', description: 'The data centre where the VM will be located')
+    string(name: 'SUBNET_RANGE', defaultValue: '10.0.0.0/24', description: 'The subnet range')
+  }
+
+  stages {
+    stage('Terraform Create HPC Manager') {
+      
+      steps {
+        container('worker') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+              withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+            sh "cd terraform/hetzner-hpc-manager && terraform init -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hetzner-hpc-manager && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'  -var='location=$LOCATION' -var='network_id=$NETWORK_ID' -var='server_type=$SERVER_TYPE'"
+            sh "cd terraform/hetzner-hpc-manager && echo -n SERVER= > ipv4_address.txt && terraform output -json ipv4_address >> ipv4_address.txt"
+            sh "cd terraform/hetzner-hpc-manager && echo -n SERVER_ID= > server_id.txt && terraform output -json id >> server_id.txt"
+        script {
+            def server = readProperties file: 'terraform/hetzner-hpc-manager/ipv4_address.txt'
+            env.SERVER = server.SERVER
+        }
+        script {
+            def server_name = readProperties file: 'terraform/hetzner-hpc-manager/server_id.txt'
+            env.SERVER_ID = server_id.SERVER_ID
+        }
+          }
+        }
+            }
+}
+
+stage('Terraform Get the Manager node internal IP') {
+      
+      steps {
+        container('worker') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+              withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+            sh "cd terraform/hcloud-server-network && terraform init -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hcloud-server-network && terraform apply --auto-approve -var='hcloud_token=$hcloud_token' -var='network_id=$NETWORK_ID' -var='server_id=$SERVER_ID'"
+            sh "cd terraform/hcloud-server-network && echo -n MANAGER_INTERNAL_IP= > manager_internal_ip.txt && terraform output -json internal_ip >> manager_internal_ip.txt"
+        script {
+            def server = readProperties file: 'terraform/hcloud-server-network/manager_internal_ip.txt'
+            env.MANAGER_INTERNAL_IP = manager_internal_ip.MANAGER_INTERNAL_IP
+        }
+        
+          }
+        }
+            }
+}
+
+    stage('Ansible Configure Manager VM') {
+      
+      steps {
+        container('worker') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/gcp-automation"
+              withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
+        sh "sleep 10"
+        sh "cd ansible && ansible-playbook -i $SERVER, --key-file $HETZNER -u root configure-hpc-manager.yml -e SUBNET_RANGE=$SUBNET_RANGE"
+      }
+        }
+            }
+}
+
+    stage('Terraform create HPC Worker nodes') {
+      
+      steps {
+        container('worker') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+              withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+            sh "cd terraform/hetzner-hpc-worker && terraform init -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hetzner-hpc-worker && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'  -var='location=$LOCATION' -var='network_id=$NETWORK_ID' -var='server_type=$SERVER_TYPE'"
+            sh "cd terraform/hetzner-hpc-worker && echo -n WORKER_IPS= > ipv4_address.txt && terraform output -json ipv4_address | | jq --raw-output 'join(",")' >> ipv4_address.txt"
+        script {
+            def server = readProperties file: 'terraform/hetzner-hpc-worker/ipv4_address.txt'
+            env.WORKER_IPS = worker_ips.WORKER_IPS
+        }
+          }
+        }
+            }
+    }
+
+    
+      }
+  }
+
+      
