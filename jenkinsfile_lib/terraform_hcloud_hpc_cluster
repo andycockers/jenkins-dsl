@@ -71,6 +71,7 @@ stage('Terraform Get the Manager node internal IP') {
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
               withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
+        sh "sleep 20"
         sh "cd ansible && ansible-playbook -i $SERVER, --key-file $HETZNER -u root configure-hpc-manager-centos.yml -e SUBNET_RANGE=$SUBNET_RANGE"
       }
         }
@@ -106,6 +107,7 @@ stage('Terraform Get the Manager node internal IP') {
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
               withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
+        sh "sleep 20"
         sh "cd ansible && ansible-playbook -i $WORKER_IPS, --key-file $HETZNER -u root configure-hpc-worker.yml -e MANAGER_IP=$MANAGER_INTERNAL_IP:/mnt/share"
       }
         }
