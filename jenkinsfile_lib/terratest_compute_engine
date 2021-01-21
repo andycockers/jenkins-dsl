@@ -15,7 +15,7 @@ pipeline {
         spec:
           containers:
           - name: terratest
-            image: wolfman.crabdance.com/terratest-terraform
+            image: wolfman.crabdance.com/terratest-terraform-arm
             imagePullPolicy: IfNotPresent
             command:
             - cat
