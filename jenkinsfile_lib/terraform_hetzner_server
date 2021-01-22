@@ -20,7 +20,7 @@ pipeline {
             sh "cd terraform/hetzner-server && terraform init -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hetzner-server && terraform plan -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hetzner-server && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'"
-            sh "cd terraform/hetzner-server && echo -n SERVER= > ipv4_address.txt && terraform output --json ipv4_address >> ipv4_address.txt"
+            sh "cd terraform/hetzner-server && echo -n SERVER= > ipv4_address.txt && terraform output --json ipv4_address | jq --raw-output 'join(\",\")' >> ipv4_address.txt"
             sh "cd terraform/hetzner-server && echo -n SERVER_NAME= > server_name.txt && terraform output -json server_name >> server_name.txt"
         script {
             def server = readProperties file: 'terraform/hetzner-server/ipv4_address.txt'
