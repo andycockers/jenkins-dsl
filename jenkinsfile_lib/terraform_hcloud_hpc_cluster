@@ -27,7 +27,7 @@ parameters {
               withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hetzner-hpc-manager && terraform init -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hetzner-hpc-manager && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'  -var='location=$LOCATION' -var='network_id=$NETWORK_ID' -var='server_type=$SERVER_TYPE' -var='type=type=$SNAPSHOT_TAG'"
-            sh "cd terraform/hetzner-hpc-manager && echo -n SERVER= > ipv4_address.txt && terraform output ipv4_address >> ipv4_address.txt"
+            sh "cd terraform/hetzner-hpc-manager && echo -n SERVER= > ipv4_address.txt && terraform output --json ipv4_address | jq --raw-output 'join(\",\")' >> ipv4_address.txt"
             sh "cd terraform/hetzner-hpc-manager && echo -n SERVER_ID= > server_id.txt && terraform output id >> server_id.txt"
         script {
             def server = readProperties file: 'terraform/hetzner-hpc-manager/ipv4_address.txt'
@@ -52,7 +52,7 @@ stage('Terraform Get the Manager node internal IP') {
               withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hcloud-server-network && terraform init -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hcloud-server-network && terraform apply --auto-approve -var='hcloud_token=$hcloud_token' -var='network_id=$NETWORK_ID' -var='server_id=$SERVER_ID'"
-            sh "cd terraform/hcloud-server-network && echo -n MANAGER_INTERNAL_IP= > manager_internal_ip.txt && terraform output internal_ip >> manager_internal_ip.txt"
+            sh "cd terraform/hcloud-server-network && echo -n MANAGER_INTERNAL_IP= > manager_internal_ip.txt && terraform output --json internal_ip | jq --raw-output 'join(\",\")' >> manager_internal_ip.txt"
         script {
             def manager_internal_ip = readProperties file: 'terraform/hcloud-server-network/manager_internal_ip.txt'
             env.MANAGER_INTERNAL_IP = manager_internal_ip.MANAGER_INTERNAL_IP
