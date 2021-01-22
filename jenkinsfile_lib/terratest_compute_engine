@@ -5,23 +5,7 @@
 
 pipeline {
   agent {
-    kubernetes {
-      yaml """
-        apiVersion: v1
-        kind: Pod
-        metadata:
-          labels:
-            jenkins: build
-        spec:
-          containers:
-          - name: terratest
-            image: wolfman.crabdance.com/terratest-terraform-arm
-            imagePullPolicy: IfNotPresent
-            command:
-            - cat
-            tty: true
-        """
-    }
+    label "terratest" 
   }
 
   stages {
