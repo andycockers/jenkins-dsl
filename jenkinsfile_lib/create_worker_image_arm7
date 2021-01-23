@@ -14,7 +14,7 @@ pipeline {
         spec:
           containers:
           - name: docker-jenkins-agent
-            image: wolfman.crabdance.com/worker-arm-buster
+            image: wolfman.crabdance.com/docker-docker
             command:
             - cat
             tty: true
