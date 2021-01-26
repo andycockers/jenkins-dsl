@@ -12,3 +12,8 @@ folder('terraform') {
     displayName('Terraform')
     description('Terraform Jobs')
 }
+
+folder('ansible') {
+    displayName('Ansible')
+    description('Ansible Jobs')
+}
