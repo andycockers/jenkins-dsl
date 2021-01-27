@@ -35,4 +35,5 @@ stage('Test Go Install') {
   }
 }
 }
+}
 
