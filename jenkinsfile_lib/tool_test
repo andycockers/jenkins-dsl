@@ -7,9 +7,9 @@ pipeline {
   agent {
     label "worker"
   }
-  tools {
+  /*tools {
       go 'go-arm'
-    }
+    }*/
   
   stages {
     stage('Code Checkout from GitHub') {
