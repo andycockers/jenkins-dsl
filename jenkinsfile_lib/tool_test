@@ -5,7 +5,10 @@
 
 pipeline {
   agent {
-    label "alpine" 
+    label "alpine"
+    tools {
+      go 'Go 1.15.7'
+    }
   }
   
   stages {
@@ -21,10 +24,10 @@ pipeline {
 
 stage('Test Go Install') {
       steps {
+        container('alpine') {
           
-          def root = tool type: 'go', name: 'Go 1.15.7'
           withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
-        sh 'go version'
+          sh 'go version'
     }
          
       
