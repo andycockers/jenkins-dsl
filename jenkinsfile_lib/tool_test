@@ -5,7 +5,7 @@
 
 pipeline {
   agent {
-    label "worker"
+    label "alpine"
   }
   tools {
       terraform 'terraform'
@@ -14,7 +14,8 @@ pipeline {
   stages {
     stage('Code Checkout from GitHub') {
       steps {
-        container('worker') {
+        container('alpine') {
+              sh "apk add git"
               git branch: "master",
               credentialsId: "github",
               url: "git@github.com:andycockers/gcp-automation.git"
@@ -24,7 +25,7 @@ pipeline {
 
 stage('Test Terraform Install') {
       steps {
-        container('worker') {
+        container('alpine') {
           
           sh 'terraform'
     
