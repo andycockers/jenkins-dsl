@@ -9,6 +9,7 @@ pipeline {
   }
   tools {
       terraform 'terraform'
+      go 'go-arm'
     }
   
   stages {
