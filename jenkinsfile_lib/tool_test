@@ -21,14 +21,13 @@ pipeline {
 
 stage('Test Go Install') {
       steps {
-        container('alpine') {
-          step
+          
           def root = tool type: 'go', name: 'Go 1.15.7'
           withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
         sh 'go version'
     }
          
-      }
+      
     }
   }
 }
