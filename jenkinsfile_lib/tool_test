@@ -17,7 +17,7 @@ pipeline {
         container('alpine') {
               git branch: "master",
               credentialsId: "github",
-              url: "git@github.com:andycockers/gcp-automation.git"
+              url: "git@github.com:andycockers/kubernetes.git"
         }
             }
 }
