@@ -1,0 +1,35 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent {
+    label "alpine" 
+  }
+  
+  stages {
+    stage('Code Checkout from GitHub') {
+      steps {
+        container('alpine') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "git@github.com:andycockers/gcp-automation.git"
+        }
+            }
+}
+
+stage('Test Go Install') {
+      steps {
+        container('alpine') {
+          def root = tool type: 'go', name: 'Go 1.15.7'
+          withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
+        sh 'go version'
+    }
+         
+      }
+    }
+  }
+}
+}
+
