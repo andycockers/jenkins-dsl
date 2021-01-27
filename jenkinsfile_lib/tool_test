@@ -8,7 +8,7 @@ pipeline {
     label "alpine"
   }
   tools {
-      go 'Go 1.15.7'
+      go 'go 1.15.7'
     }
   
   stages {
