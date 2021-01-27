@@ -8,7 +8,7 @@ pipeline {
     label "worker"
   }
   tools {
-      go 'go'
+      go 'go-arm'
     }
   
   stages {
