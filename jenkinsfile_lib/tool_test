@@ -7,9 +7,9 @@ pipeline {
   agent {
     label "worker"
   }
-  /*tools {
-      go 'go-arm'
-    }*/
+  tools {
+      terraform 'terraform'
+    }
   
   stages {
     stage('Code Checkout from GitHub') {
@@ -22,11 +22,11 @@ pipeline {
             }
 }
 
-stage('Test Go Install') {
+stage('Test Terraform Install') {
       steps {
         container('worker') {
           
-          sh 'go version'
+          sh 'terraform'
     
          
       
