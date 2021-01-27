@@ -15,7 +15,6 @@ pipeline {
     stage('Code Checkout from GitHub') {
       steps {
         container('alpine') {
-              sh "apk add git"
               git branch: "master",
               credentialsId: "github",
               url: "git@github.com:andycockers/gcp-automation.git"
