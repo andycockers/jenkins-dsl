@@ -27,9 +27,8 @@ stage('Test Go Install') {
       steps {
         container('worker') {
           
-          withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
           sh 'go version'
-    }
+    
          
       
     }
