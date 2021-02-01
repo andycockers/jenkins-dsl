@@ -48,6 +48,7 @@ stage('Docker build image') {
       steps {
         container('docker-jenkins-agent') {
         sh "docker build -t wolfman.crabdance.com/jenkins-arm:$VERSION -f Dockerfile-ubuntu ."
+        sh "docker push wolfman.crabdance.com/jenkins-arm:$VERSION"
       }
       }
     }
