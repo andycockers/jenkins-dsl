@@ -27,6 +27,10 @@ pipeline {
               path: /var/run/docker.sock
         """ }
   }
+
+  options {
+    skipDefaultCheckout true
+  }
   
   stages {
     stage('Code Checkout from GitHub') {
