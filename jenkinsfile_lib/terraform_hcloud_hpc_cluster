@@ -52,7 +52,7 @@ stage('Terraform Get the Manager node internal IP') {
               withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hcloud-server-network && terraform init -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hcloud-server-network && terraform apply --auto-approve -var='hcloud_token=$hcloud_token' -var='network_id=$NETWORK_ID' -var='server_id=$SERVER_ID'"
-            sh "cd terraform/hcloud-server-network && echo -n MANAGER_INTERNAL_IP= > manager_internal_ip.txt && terraform output --json internal_ip | jq --raw-output 'join(\",\")' >> manager_internal_ip.txt"
+            sh "cd terraform/hcloud-server-network && echo -n MANAGER_INTERNAL_IP= > manager_internal_ip.txt && terraform output internal_ip >> manager_internal_ip.txt"
         script {
             def manager_internal_ip = readProperties file: 'terraform/hcloud-server-network/manager_internal_ip.txt'
             env.MANAGER_INTERNAL_IP = manager_internal_ip.MANAGER_INTERNAL_IP
