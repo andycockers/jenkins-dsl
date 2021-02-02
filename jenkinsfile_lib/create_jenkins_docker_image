@@ -1,0 +1,57 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent { kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: docker-jenkins-agent
+            image: wolfman.crabdance.com/docker-docker-arm7
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock
+        """ }
+  }
+
+  parameters {
+    string(name: 'VERSION', defaultValue: '', description: 'The version of Jenkins to tag')
+      }
+
+  
+  stages {
+    stage('Code Checkout from GitHub') {
+      steps {
+        container('docker-jenkins-agent') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "git@github.com:andycockers/jenkins-arm.git"
+        }
+            }
+}
+
+stage('Docker build image') {
+      steps {
+        container('docker-jenkins-agent') {
+        sh "docker build -t wolfman.crabdance.com/jenkins-arm:$VERSION -f Dockerfile-ubuntu ."
+        sh "docker push wolfman.crabdance.com/jenkins-arm:$VERSION"
+      }
+      }
+    }
+  }
+}
+
