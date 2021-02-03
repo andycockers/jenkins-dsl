@@ -7,26 +7,19 @@ pipeline {
   agent {
     kubernetes {
       yaml """
-        apiVersion: v1
-        kind: Pod
-        metadata:
-          labels:
+       apiVersion: v1
+       kind: Pod
+       metadata:
+        labels:
             jenkins: build
-        spec:
-          containers:
-          - name: docker-jenkins-agent
-            image: calmmopey/docker-docker
-            command:
-            - cat
-            tty: true
-            volumeMounts:
-            - mountPath: /var/run/docker.sock
-              name: docker-sock
-          volumes:
-          - name: docker-sock
-            hostPath:
-              path: /var/run/docker.sock
-        """
+       spec:
+        containers:
+        - name: worker
+          image: wolfman.crabdance.com/worker-arm-ubuntu
+          command:
+          - cat
+          tty: true
+  """
     }
   }
 
