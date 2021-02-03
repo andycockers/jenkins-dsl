@@ -33,7 +33,7 @@ pipeline {
     stage("SSH Steps Rocks!") {
       steps{
         container('worker') {
-          withCredentials([sshUserPrivateKey(credentialsId: "hcp", keyFileVariable: 'keyfile')]) {
+          withCredentials([sshUserPrivateKey(credentialsId: "hpc", keyFileVariable: 'keyfile')]) {
         sh "ssh hpc@116.203.81.151"
        }
    }
