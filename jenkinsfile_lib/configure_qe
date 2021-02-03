@@ -28,8 +28,8 @@ pipeline {
 
     }
   }
-
-  node {
+stages{
+  container('worker') {
     withCredentials([sshUserPrivateKey(credentialsId: 'sshUser', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
         remote.user = userName
         remote.identityFile = identity
@@ -42,6 +42,7 @@ pipeline {
             sshRemove remote: remote, path: 'abc.sh'
         }
     }
+}
 }
 }
 
