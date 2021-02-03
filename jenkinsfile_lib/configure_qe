@@ -28,13 +28,13 @@ pipeline {
 
     }
   }
-stages{
-  container('worker') {
-     stage("SSH Steps Rocks!") {
+stages {
+    stage('Configure HPC Manager') {
+      steps {
+        container('worker') {
     withCredentials([sshUserPrivateKey(credentialsId: 'sshUser', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
         remote.user = userName
         remote.identityFile = identity
-       
             writeFile file: 'abc.sh', text: 'ls'
             sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
             sshPut remote: remote, from: 'abc.sh', into: '.'
