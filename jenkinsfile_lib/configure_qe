@@ -16,7 +16,7 @@ stages {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'hpc', keyFileVariable: 'key', passphraseVariable: '', usernameVariable: 'hpc')]) {
-                        sh "ssh hpc@116.203.81.151"
+                        sh "ssh 116.203.81.151 && ls -la"
                     }
                 }
             }
