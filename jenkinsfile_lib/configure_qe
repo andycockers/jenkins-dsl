@@ -31,7 +31,7 @@ pipeline {
 stage('SSH') {
       steps {
         container('worker') {
-          withCredentials([string(credentialsId: 'hpc', variable: 'HPC')]) {
+          withCredentials([file(credentialsId: 'hpc', variable: 'HPC')]) {
           sh "ssh -i $HPC hpc@116.203.81.151"
       }
       }
