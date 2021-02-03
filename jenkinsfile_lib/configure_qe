@@ -2,6 +2,10 @@
 
 /* import shared library */
 @Library('jenkins-dsl')_
+def remote = [:]
+remote.name = "node-1"
+remote.host = "116.203.81.151"
+remote.allowAnyHosts = true
 
 pipeline {
   agent {
@@ -31,12 +35,22 @@ pipeline {
 stage('SSH') {
       steps {
         container('worker') {
-          withCredentials([file(credentialsId: 'hpc', variable: 'HPC')]) {
-          sh "ssh -i $HPC hpc@116.203.81.151"
-      }
-      }
+          withCredentials([sshUserPrivateKey(credentialsId: 'hpc', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'hpc')]) {
+          remote.user = userName
+        remote.identityFile = identity
+        stage("SSH Steps Rocks!") {
+            sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
+        }
     }
+}
+      }
+}
   }
 }
-}
+      
+      
+    
+  
+
+
 
