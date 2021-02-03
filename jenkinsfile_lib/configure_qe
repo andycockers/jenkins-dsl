@@ -9,26 +9,9 @@ remote.allowAnyHosts = true
 
 pipeline {
   agent {
-    kubernetes {
-      yaml """
-       apiVersion: v1
-       kind: Pod
-       metadata:
-        labels:
-            jenkins: build
-       spec:
-        containers:
-        - name: worker
-          image: wolfman.crabdance.com/worker-arm-buster
-          command:
-          - cat
-          tty: true
-                    
-  """
-
-    }
+    label "worker" 
   }
-node('worker') {
+node {
     withCredentials([sshUserPrivateKey(credentialsId: 'sshUser', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
         remote.user = userName
         remote.identityFile = identity
