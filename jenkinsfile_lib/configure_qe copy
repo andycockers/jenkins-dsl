@@ -26,17 +26,9 @@ pipeline {
   }
 
   stages {
-    stage('Code Checkout from GitHub') {
-      steps {
-        container('worker') {
-              git branch: "master",
-              credentialsId: "github",
-              url: "git@github.com:andycockers/gcp-automation.git"
-        }
-            }
-}
+    
 
-stage('Ansible Decrypt Secret') {
+stage('SSH') {
       steps {
         container('worker') {
           withCredentials([string(credentialsId: 'hpc', variable: 'HPC')]) {
