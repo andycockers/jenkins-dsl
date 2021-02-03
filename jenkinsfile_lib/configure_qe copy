@@ -1,0 +1,50 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent {
+    kubernetes {
+      yaml """
+       apiVersion: v1
+       kind: Pod
+       metadata:
+        labels:
+            jenkins: build
+       spec:
+        containers:
+        - name: worker
+          image: wolfman.crabdance.com/worker-arm-buster
+          command:
+          - cat
+          tty: true
+                    
+  """
+
+    }
+  }
+
+  stages {
+    stage('Code Checkout from GitHub') {
+      steps {
+        container('worker') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "git@github.com:andycockers/gcp-automation.git"
+        }
+            }
+}
+
+stage('Ansible Decrypt Secret') {
+      steps {
+        container('worker') {
+          withCredentials([string(credentialsId: 'hpc', variable: 'HPC')]) {
+          sh "ssh -i $HPC hpc@116.203.81.151"
+      }
+      }
+    }
+  }
+}
+}
+
