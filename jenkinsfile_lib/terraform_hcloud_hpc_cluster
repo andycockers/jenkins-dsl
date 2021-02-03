@@ -10,9 +10,11 @@ pipeline {
 
 parameters {
     string(name: 'NETWORK_ID', defaultValue: '823122', description: 'The ID of the internal network')
-    string(name: 'SERVER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type')
+    string(name: 'MANAGER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type to apply to the manager node')
+    string(name: 'WORKER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type to apply to the manager node(s)')
     string(name: 'LOCATION', defaultValue: 'nbg1', description: 'The data centre where the VM will be located')
     string(name: 'SUBNET_RANGE', defaultValue: '10.0.0.0/24', description: 'The subnet range')
+    string(name: 'WORKER_NODES', defaultValue: '2', description: 'The number of workers')
     choice(name: 'SNAPSHOT_TAG', choices: ['hpc-image-template', 'hpc-image-centos-template'], description: 'The snapshot tag')
   }
 
@@ -26,7 +28,7 @@ parameters {
               url: "https://github.com/andycockers/kubernetes"
               withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hetzner-hpc-manager && terraform init -var='hcloud_token=$hcloud_token'"
-            sh "cd terraform/hetzner-hpc-manager && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'  -var='location=$LOCATION' -var='network_id=$NETWORK_ID' -var='server_type=$SERVER_TYPE' -var='type=type=$SNAPSHOT_TAG'"
+            sh "cd terraform/hetzner-hpc-manager && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'  -var='location=$LOCATION' -var='network_id=$NETWORK_ID' -var='server_type=$MANAGER_TYPE' -var='type=type=$SNAPSHOT_TAG'"
             sh "cd terraform/hetzner-hpc-manager && echo -n SERVER= > ipv4_address.txt && terraform output ipv4_address >> ipv4_address.txt"
             sh "cd terraform/hetzner-hpc-manager && echo -n SERVER_ID= > server_id.txt && terraform output id >> server_id.txt"
         script {
@@ -87,7 +89,7 @@ stage('Terraform Get the Manager node internal IP') {
               url: "https://github.com/andycockers/kubernetes"
               withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hetzner-hpc-worker && terraform init -var='hcloud_token=$hcloud_token'"
-            sh "cd terraform/hetzner-hpc-worker && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'  -var='location=$LOCATION' -var='network_id=$NETWORK_ID' -var='server_type=$SERVER_TYPE' -var='type=type=$SNAPSHOT_TAG'"
+            sh "cd terraform/hetzner-hpc-worker && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'  -var='location=$LOCATION' -var='network_id=$NETWORK_ID' -var='server_type=$WORKER_TYPE' -var='type=type=$SNAPSHOT_TAG' -var='node_count=$WORKER_NODES'"
             sh "cd terraform/hetzner-hpc-worker && echo -n WORKER_IPS= > ipv4_address.txt && terraform output --json ipv4_address | jq --raw-output 'join(\",\")' >> ipv4_address.txt"
         script {
             def worker_ips = readProperties file: 'terraform/hetzner-hpc-worker/ipv4_address.txt'

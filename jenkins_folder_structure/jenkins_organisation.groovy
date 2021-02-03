@@ -17,3 +17,8 @@ folder('ansible') {
     displayName('Ansible')
     description('Ansible Jobs')
 }
+
+folder('hpc') {
+    displayName('HPC')
+    description('HPC Jobs')
+}
