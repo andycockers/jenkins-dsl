@@ -11,7 +11,7 @@ pipeline {
 parameters {
     string(name: 'NETWORK_ID', defaultValue: '823122', description: 'The ID of the internal network')
     string(name: 'MANAGER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type to apply to the manager node')
-    string(name: 'WORKER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type to apply to the manager node(s)')
+    string(name: 'WORKER_TYPE', defaultValue: 'cx11', description: 'The hcloud server type to apply to the worker node(s)')
     string(name: 'LOCATION', defaultValue: 'nbg1', description: 'The data centre where the VM will be located')
     string(name: 'SUBNET_RANGE', defaultValue: '10.0.0.0/24', description: 'The subnet range')
     string(name: 'WORKER_NODES', defaultValue: '2', description: 'The number of workers')
