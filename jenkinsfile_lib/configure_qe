@@ -2,33 +2,28 @@
 
 /* import shared library */
 @Library('jenkins-dsl')_
-def remote = [:]
-remote.name = "node-1"
-remote.host = "116.203.81.151"
-remote.allowAnyHosts = true
 
 pipeline {
   agent {
     label "worker" 
   }
-stages {
-        stage('SSH') {
-            steps {
-                script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'hpc', keyFileVariable: 'key', passphraseVariable: '', usernameVariable: 'hpc')]) {
-                        sh "ssh 116.203.81.151 && ls -la"
-                    }
-                }
-            }
-        }
-    }
+parameters {
+    string(name: 'MANAGER_IP', defaultValue: '', description: 'The IP address of the manager node')
+  }
+
+  stages {
+      stage('Download and configure Quantum Espresso') {
+          steps {
+        container('worker') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/gcp-automation"
+              withCredentials([file(credentialsId: 'hpc', variable: 'HPC')]) {
+              sh "cd ansible && ansible-playbook -i $MANAGER_IP, --key-file $HPC -u hpc configure-qe.yml"
+
+      }
+  }
+          }
+      }
+  }
 }
-  
-
-      
-      
-    
-  
-
-
-
