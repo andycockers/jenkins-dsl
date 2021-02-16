@@ -23,7 +23,7 @@ pipeline {
           - name: GOOGLE_APPLICATION_CREDENTIALS 
             value: /jenkins/jenkins-test-project.json 
           volumeMounts: 
-          - name: gcp-sa-secret
+          - name: jenkins-serviceaccount
             mountPath: "/jenkins" 
             readOnly: true
         volumes:
