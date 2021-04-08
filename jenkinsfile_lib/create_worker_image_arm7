@@ -46,7 +46,8 @@ pipeline {
 stage('Run Packer') {
       steps {
         container('docker-jenkins-agent') {
-        sh "cd packer/create-docker-worker-image-arm && packer build create-docker-worker-image-buster.json"
+        withCredentials([string(credentialsId: 'dockerhub', variable: 'PASSWORD')]) {
+        sh "cd packer/create-docker-worker-image-arm && packer build -var password=$PASSWORD create-docker-worker-image-buster.json"
       }
       }
     }
