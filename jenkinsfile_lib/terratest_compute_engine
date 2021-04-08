@@ -15,7 +15,7 @@ pipeline {
        spec:
         containers:
         - name: terratest
-          image: wolfman.crabdance.com/terratest-terraform-arm
+          image: calmmopey/terratest-terraform-arm
           command:
           - cat
           tty: true
