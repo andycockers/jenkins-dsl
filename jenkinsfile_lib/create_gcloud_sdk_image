@@ -46,7 +46,7 @@ stage('Run Packer') {
         container('docker-jenkins-agent') {
         withCredentials([string(credentialsId: 'dockerhub', variable: 'PASSWORD')]) {
         sh "cd packer/create-gcloud-sdk-image && packer build create-gcloud-sdk-image.json"
-        sh "echo $PASSWORD | docker login --username calmmopey --password-stdin"
+        sh "docker login --username calmmopey --password $PASSWORD"
         sh "docker push calmmopey/gcloud-sdk"
 }
       }
