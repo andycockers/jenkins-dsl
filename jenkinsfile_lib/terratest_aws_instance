@@ -58,7 +58,7 @@ pipeline {
     stage('Run Terratest') {
       steps {
         container('terratest') {
-        withCredentials([string(credentialsId: 'aws-andy', variable: 'AWS_SHARED_CREDENTIALS_FILE')]) {
+        withCredentials([file(credentialsId: 'aws-andy', variable: 'AWS_SHARED_CREDENTIALS_FILE')]) {
         sh "cd terratest/aws/aws-instance && go test"
         }
       }
