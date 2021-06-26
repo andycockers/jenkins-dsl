@@ -1,6 +1,8 @@
 pipelineJob("ansible/ansible-decrypt-secret") {
 	description()
 	keepDependencies(false)
+	options { buildDiscarder(logRotator(numToKeepStr: '5')) }
+
 
 	//parameters {
 	//	stringParam("CLUSTER_LOCATION", "amer", "gcp cluster locationd")
