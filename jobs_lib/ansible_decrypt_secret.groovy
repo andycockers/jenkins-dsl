@@ -1,7 +1,6 @@
 pipelineJob("ansible/ansible-decrypt-secret") {
 	description()
 	keepDependencies(false)
-	options { buildDiscarder(logRotator(numToKeepStr: '5')) }
 
 
 	//parameters {
