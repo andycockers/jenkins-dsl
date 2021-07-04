@@ -54,7 +54,7 @@ parameters {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
-              withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+              withCredentials([string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hetzner-hpc-manager && terraform init -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hetzner-hpc-manager && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'  -var='location=$LOCATION' -var='network_id=$NETWORK_ID' -var='server_type=$MANAGER_TYPE' -var='type=type=$SNAPSHOT_TAG'"
             sh "cd terraform/hetzner-hpc-manager && echo -n SERVER= > ipv4_address.txt && terraform output ipv4_address >> ipv4_address.txt"
