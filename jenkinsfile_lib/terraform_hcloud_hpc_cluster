@@ -79,7 +79,7 @@ stage('Terraform Get the Manager node internal IP') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
-              withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+              withCredentials([string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hcloud-server-network && terraform init -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hcloud-server-network && terraform apply --auto-approve -var='hcloud_token=$hcloud_token' -var='network_id=$NETWORK_ID' -var='server_id=$SERVER_ID'"
             sh "cd terraform/hcloud-server-network && echo -n MANAGER_INTERNAL_IP= > manager_internal_ip.txt && terraform output internal_ip >> manager_internal_ip.txt"
@@ -115,7 +115,7 @@ stage('Terraform Get the Manager node internal IP') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
-              withCredentials([file(credentialsId: 'jenkins-test-project', variable: 'GOOGLE_APPLICATION_CREDENTIALS'),string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+              withCredentials([string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
             sh "cd terraform/hetzner-hpc-worker && terraform init -var='hcloud_token=$hcloud_token'"
             sh "cd terraform/hetzner-hpc-worker && terraform apply --auto-approve -var='hcloud_token=$hcloud_token'  -var='location=$LOCATION' -var='network_id=$NETWORK_ID' -var='server_type=$WORKER_TYPE' -var='type=type=$SNAPSHOT_TAG' -var='node_count=$WORKER_NODES'"
             sh "cd terraform/hetzner-hpc-worker && echo -n WORKER_IPS= > ipv4_address.txt && terraform output --json ipv4_address | jq --raw-output 'join(\",\")' >> ipv4_address.txt"
