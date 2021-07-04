@@ -4,8 +4,36 @@
 @Library('jenkins-dsl')_
 
 pipeline {
+  options { buildDiscarder(logRotator(numToKeepStr: '5')) }
   agent {
-    label "worker" 
+    kubernetes {
+      yaml """
+       apiVersion: v1
+       kind: Pod
+       metadata:
+        labels:
+            jenkins: build
+       spec:
+        containers:
+        - name: worker
+          image: calmmopey/worker-arm-buster
+          command:
+          - cat
+          tty: true
+          env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS 
+            value: /jenkins/jenkins-test-project.json 
+          volumeMounts: 
+          - name: jenkins-serviceaccount
+            mountPath: "/jenkins" 
+            readOnly: true
+        volumes:
+        - name: jenkins-serviceaccount
+          secret:
+            secretName: jenkins-serviceaccount
+  """
+
+    }
   }
 
 parameters {
