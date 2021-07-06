@@ -15,7 +15,7 @@ pipeline {
             jenkins: build
        spec:
         containers:
-        - name: worker
+        - name: terraform
           image: calmmopey/worker-arm-buster
           command:
           - cat
@@ -62,7 +62,7 @@ parameters {
     stage('Terraform Create HPC Manager') {
       
       steps {
-        container('worker') {
+        container('terraform') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
@@ -87,7 +87,7 @@ parameters {
 stage('Terraform Get the Manager node internal IP') {
       
       steps {
-        container('worker') {
+        container('terraform') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
@@ -129,7 +129,7 @@ stage('Terraform Get the Manager node internal IP') {
     stage('Terraform create HPC Worker nodes') {
       
       steps {
-        container('worker') {
+        container('terraform') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/kubernetes"
