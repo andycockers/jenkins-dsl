@@ -27,6 +27,18 @@ pipeline {
           - name: jenkins-serviceaccount
             mountPath: "/jenkins" 
             readOnly: true
+        - name: ansible
+          image: calmmopey/worker-arm-buster
+          command:
+          - cat
+          tty: true
+          env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /jenkins/jenkins-test-project.json
+          volumeMounts:
+          - name: jenkins-serviceaccount
+            mountPath: "/jenkins"
+            readOnly: true
         volumes:
         - name: jenkins-serviceaccount
           secret:
@@ -96,7 +108,7 @@ stage('Terraform Get the Manager node internal IP') {
     stage('Ansible Configure Manager VM') {
       
       steps {
-        container('worker') {
+        container('ansible') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
@@ -138,7 +150,7 @@ stage('Terraform Get the Manager node internal IP') {
     stage('Ansible Configure Worker VM(s)') {
       
       steps {
-        container('worker') {
+        container('ansible') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
