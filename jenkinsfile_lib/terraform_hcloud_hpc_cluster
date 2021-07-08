@@ -67,7 +67,7 @@ parameters {
              url: "git@github.com:andycockers/ansible-vault.git"
              withCredentials([string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
       sh """
-      ansible-vault view --vault-password-file=$VAULT github/github > github
+      ansible-vault view --vault-password-file=$VAULT github/github > github.private
       cat github
       """
     }
