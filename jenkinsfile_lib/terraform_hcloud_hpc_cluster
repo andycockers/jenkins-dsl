@@ -62,10 +62,10 @@ parameters {
     stage ('Get secrets') {
     steps {
       container('terraform') {
-      git branch: "main",
-      credentialsId: "github",
-      url: "https://github.com/andycockers/ansible-vault"
-      withCredentials([string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
+             git branch: "main",
+             credentialsId: "github",
+             url: "https://github.com/andycockers/ansible-vault"
+             withCredentials([string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
       sh """
       ansible-vault view --vault-password-file=$VAULT github/github > github
       cat github
