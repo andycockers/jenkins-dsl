@@ -128,7 +128,7 @@ stage('Ansible Configure Manager VM') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
-              withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
+              //withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
         sh """
         cd ansible
         #echo $HETZNER > HETZNER
@@ -138,7 +138,7 @@ stage('Ansible Configure Manager VM') {
       }
         }
             }
-}
+//}
 
     stage('Terraform create HPC Worker nodes') {
       
