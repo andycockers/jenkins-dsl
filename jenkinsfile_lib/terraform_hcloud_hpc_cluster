@@ -166,10 +166,9 @@ stage('Ansible Configure Manager VM') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
-              withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
         sh "sleep 20"
-        sh "cd ansible && ansible-playbook -i $WORKER_IPS, --key-file $HETZNER -u root configure-hpc-worker.yml -e MANAGER_IP=$MANAGER_INTERNAL_IP:/mnt/share"
-      }
+        sh "cd ansible && ansible-playbook -i $WORKER_IPS, --key-file $WORKSPACE/hetzner-ssh.private -u root configure-hpc-worker.yml -e MANAGER_IP=$MANAGER_INTERNAL_IP:/mnt/share"
+      
         }
             }
 }
