@@ -128,10 +128,8 @@ stage('Ansible Configure Manager VM') {
               git branch: "master",
               credentialsId: "github",
               url: "https://github.com/andycockers/gcp-automation"
-              //withCredentials([file(credentialsId: 'hetzner-ssh', variable: 'HETZNER')]) {
         sh """
         cd ansible
-        #echo $HETZNER > HETZNER
         sleep 20
         ansible-playbook -i $SERVER, --key-file $WORKSPACE/hetzner-ssh -u root configure-hpc-manager-centos.yml -e SUBNET_RANGE=$SUBNET_RANGE"
         """
