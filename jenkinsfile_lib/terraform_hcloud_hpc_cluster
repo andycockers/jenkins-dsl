@@ -68,8 +68,8 @@ parameters {
              withCredentials([string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
       sh """
       echo $VAULT > vault_pass
-      ansible-vault view --vault-password-file=vault_pass hetzner-ssh/hetzner-ssh > hetzner-ssh.private
-      cat hetzner-ssh.private
+      ansible-vault view --vault-password-file=vault_pass hetzner-ssh/hetzner-ssh > $WORKSPACE/hetzner-ssh.private
+      cat $WORKSPACE/hetzner-ssh.private
       """
     }
     }
@@ -131,7 +131,7 @@ stage('Ansible Configure Manager VM') {
         sh """
         cd ansible
         sleep 20
-        ansible-playbook -i $SERVER, --key-file $WORKSPACE/hetzner-ssh -u root configure-hpc-manager-centos.yml -e SUBNET_RANGE=$SUBNET_RANGE
+        ansible-playbook -i $SERVER, --key-file $WORKSPACE/hetzner-ssh.private -u root configure-hpc-manager-centos.yml -e SUBNET_RANGE=$SUBNET_RANGE
         """
       }
         }
