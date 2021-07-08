@@ -69,7 +69,7 @@ parameters {
       sh """
       echo $VAULT > vault_pass
       ansible-vault view --vault-password-file=vault_pass hetzner-ssh/hetzner-ssh > $WORKSPACE/hetzner-ssh.private
-      cat $WORKSPACE/hetzner-ssh.private
+      chmod 600 $WORKSPACE/hetzner-ssh.private
       """
     }
     }
