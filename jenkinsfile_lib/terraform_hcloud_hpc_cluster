@@ -68,8 +68,8 @@ parameters {
              withCredentials([string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
       sh """
       echo $VAULT > vault_pass
-      ansible-vault view --vault-password-file=vault_pass github/github > github.private
-      cat github.private
+      ansible-vault view --vault-password-file=vault_pass hetzner-ssh/hetzner-ssh > hetzner-ssh.private
+      cat hetzner-ssh.private
       """
     }
     }
