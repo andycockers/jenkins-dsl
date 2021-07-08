@@ -131,7 +131,7 @@ stage('Ansible Configure Manager VM') {
         sh """
         cd ansible
         sleep 20
-        ansible-playbook -i $SERVER, --key-file $WORKSPACE/hetzner-ssh -u root configure-hpc-manager-centos.yml -e SUBNET_RANGE=$SUBNET_RANGE"
+        ansible-playbook -i $SERVER, --key-file $WORKSPACE/hetzner-ssh -u root configure-hpc-manager-centos.yml -e SUBNET_RANGE=$SUBNET_RANGE
         """
       }
         }
