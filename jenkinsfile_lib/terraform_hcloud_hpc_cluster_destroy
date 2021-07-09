@@ -52,6 +52,21 @@ pipeline {
             }
 }
 
+stage('Terraform Destroy HPC Network') {
+      
+      steps {
+        container('terraform') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+              withCredentials([string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+            sh "cd terraform/hcloud-server-network && terraform init -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hcloud-server-network && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
+          }
+        }
+            }
+}
+
     stage('Terraform Destroy HPC Worker nodes') {
       
       steps {
