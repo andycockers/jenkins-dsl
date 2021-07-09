@@ -1,0 +1,73 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  options { buildDiscarder(logRotator(numToKeepStr: '5')) }
+  agent {
+    kubernetes {
+      yaml """
+       apiVersion: v1
+       kind: Pod
+       metadata:
+        labels:
+            jenkins: build
+       spec:
+        containers:
+        - name: terraform
+          image: calmmopey/worker-arm-buster
+          command:
+          - cat
+          tty: true
+          env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS 
+            value: /jenkins/jenkins-test-project.json 
+          volumeMounts: 
+          - name: jenkins-serviceaccount
+            mountPath: "/jenkins" 
+            readOnly: true
+        volumes:
+        - name: jenkins-serviceaccount
+          secret:
+            secretName: jenkins-serviceaccount
+  """
+
+    }
+  }
+
+  stages {
+    stage('Terraform Destroy HPC Manager') {
+      
+      steps {
+        container('terraform') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+              withCredentials([string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+            sh "cd terraform/hetzner-hpc-manager && terraform init -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hetzner-hpc-manager && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
+          }
+        }
+            }
+}
+
+    stage('Terraform Destroy HPC Worker nodes') {
+      
+      steps {
+        container('terraform') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+              withCredentials([string(credentialsId: 'hetzner', variable: 'hcloud_token')]) {
+            sh "cd terraform/hetzner-hpc-worker && terraform init -var='hcloud_token=$hcloud_token'"
+            sh "cd terraform/hetzner-hpc-worker && terraform destroy --auto-approve -var='hcloud_token=$hcloud_token'"
+        
+          }
+        }
+            }
+    }
+      }
+  }
+
+      
