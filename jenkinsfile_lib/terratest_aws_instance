@@ -16,7 +16,7 @@ pipeline {
        spec:
         containers:
         - name: terratest
-          image: calmmopey/terratest-terraform-arm
+          image: calmmopey/terratest-alpine
           command:
           - cat
           tty: true
@@ -50,6 +50,8 @@ pipeline {
     stage('Initialise Terratest') {
       steps {
         container('terratest') {
+        sh "tfenv install 0.12.29"  
+        sh "tfenv use 0.12.29"
         sh "cd terratest/aws/aws-instance && go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform"
       }
       }
