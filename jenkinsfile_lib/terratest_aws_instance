@@ -50,9 +50,12 @@ pipeline {
     stage('Initialise Terratest') {
       steps {
         container('terratest') {
-        sh "tfenv install 0.12.29"  
-        sh "tfenv use 0.12.29"
-        sh "cd terratest/aws/aws-instance && go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform"
+        sh '''
+        #!/bin/bash
+        tfenv install 0.12.29
+        tfenv use 0.12.29  
+        cd terratest/aws/aws-instance && go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform
+        '''
       }
       }
     }
@@ -61,7 +64,10 @@ pipeline {
       steps {
         container('terratest') {
         withCredentials([file(credentialsId: 'aws-andy', variable: 'AWS_SHARED_CREDENTIALS_FILE')]) {
-        sh "cd terratest/aws/aws-instance && go test"
+        sh '''
+        #!/bin/bash
+        cd terratest/aws/aws-instance && go test
+        '''
         }
       }
         }
