@@ -17,8 +17,7 @@ pipeline {
         containers:
         - name: terratest
           image: calmmopey/terratest-alpine:latest
-          command:
-          - cat
+          command: ["/bin/bash"]
           tty: true
           env:
           - name: GOOGLE_APPLICATION_CREDENTIALS 
