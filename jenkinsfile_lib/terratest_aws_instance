@@ -16,7 +16,7 @@ pipeline {
        spec:
         containers:
         - name: terratest
-          image: calmmopey/terratest-alpine
+          image: calmmopey/terratest-alpine:latest
           command:
           - cat
           tty: true
