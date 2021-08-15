@@ -50,6 +50,7 @@ pipeline {
       steps {
         container('terratest') {
         sh '''
+        #!/bin/bash
         source /root/.bashrc
         tfenv install 0.12.29
         tfenv use 0.12.29  
@@ -65,6 +66,7 @@ pipeline {
         withCredentials([file(credentialsId: 'aws-andy', variable: 'AWS_SHARED_CREDENTIALS_FILE')]) {
         sh '''
         #!/bin/bash
+        source /root/.bashrc
         cd terratest/aws/aws-instance
         go get github.com/gruntwork-io/terratest/modules/random
         go get github.com/gruntwork-io/terratest/modules/ssh@v0.37.5
