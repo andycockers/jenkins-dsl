@@ -16,7 +16,7 @@ pipeline {
        spec:
         containers:
         - name: terratest
-          image: calmmopey/terratest-alpine:latest
+          image: calmmopey/terratest-buster-slim
           command: ["/bin/bash"]
           tty: true
           env:
