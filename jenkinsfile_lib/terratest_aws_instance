@@ -67,6 +67,7 @@ pipeline {
         #!/bin/bash
         cd terratest/aws/aws-instance
         go get github.com/gruntwork-io/terratest/modules/random
+        go get github.com/gruntwork-io/terratest/modules/ssh@v0.37.5
         go test
         '''
         }
