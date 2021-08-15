@@ -18,6 +18,7 @@ pipeline {
         - name: terratest
           image: calmmopey/terratest-alpine:latest
           command: ["/bin/bash"]
+          args: ["-c", "source /root/.bashrc"]
           tty: true
           env:
           - name: GOOGLE_APPLICATION_CREDENTIALS 
@@ -50,8 +51,6 @@ pipeline {
       steps {
         container('terratest') {
         sh '''
-        #!/bin/bash
-        ls -la /root
         tfenv install 0.12.29
         tfenv use 0.12.29  
         cd terratest/aws/aws-instance && go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform
