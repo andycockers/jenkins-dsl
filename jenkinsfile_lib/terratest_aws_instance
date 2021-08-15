@@ -65,7 +65,9 @@ pipeline {
         withCredentials([file(credentialsId: 'aws-andy', variable: 'AWS_SHARED_CREDENTIALS_FILE')]) {
         sh '''
         #!/bin/bash
-        cd terratest/aws/aws-instance && go test
+        cd terratest/aws/aws-instance
+        go get github.com/gruntwork-io/terratest/modules/random
+        go test
         '''
         }
       }
