@@ -46,6 +46,17 @@ pipeline {
             }
 }
 
+    stage('Install Terraform') {
+      steps {
+        container('terratest') {
+          sh '''#!/bin/bash
+          tfenv install 0.12.29
+          tfenv use 0.12.29
+          '''
+        }
+      }
+    }
+
     stage('Initialise Terratest') {
       steps {
         container('terratest') {
