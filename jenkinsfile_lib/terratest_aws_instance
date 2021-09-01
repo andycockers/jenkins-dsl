@@ -49,7 +49,7 @@ pipeline {
     stage('Install Terraform') {
       steps {
         container('terratest') {
-          sh '''#!/bin/bash
+          sh '''
           tfenv install 0.12.29
           tfenv use 0.12.29
           '''
