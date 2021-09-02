@@ -16,7 +16,7 @@ pipeline {
        spec:
         containers:
         - name: terratest
-          image: calmmopey/terratest-terraform-arm
+          image: calmmopey/terratest-buster-slim
           command:
           - cat
           tty: true
@@ -47,10 +47,25 @@ pipeline {
             }
 }
 
+stage('Install Terraform') {
+      steps {
+        container('terratest') {
+          sh '''
+          tfenv install 0.12.29
+          tfenv use 0.12.29
+          '''
+        }
+      }
+    }
+
     stage('Initialise Terratest') {
       steps {
         container('terratest') {
-        sh "cd terratest/hetzner/hcloud-server && go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform"
+        sh '''
+        cd terratest/hetzner/hcloud-server
+        go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform
+        go mod tidy
+        '''
       }
       }
     }
@@ -59,7 +74,13 @@ pipeline {
       steps {
         container('terratest') {
           withCredentials([string(credentialsId: 'hetzner', variable: 'HCLOUD_TOKEN')]) {
-        sh "cd terratest/hetzner/hcloud-server && go test"
+        sh '''
+        cd terratest/hetzner/hcloud-server
+        go get github.com/gruntwork-io/terratest/modules/random
+        go get github.com/gruntwork-io/terratest/modules/ssh@v0.37.5
+        go get github.com/gruntwork-io/terratest/modules/terraform@v0.37.5
+        go test
+        '''
       }
         }
       }
