@@ -1,0 +1,66 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  options { buildDiscarder(logRotator(numToKeepStr: '5')) }
+  agent {
+    kubernetes {
+      yaml """
+       apiVersion: v1
+       kind: Pod
+       metadata:
+        labels:
+            jenkins: build
+       spec:
+        containers:
+        - name: terratest
+          image: calmmopey/terratest-terraform-arm
+          command:
+          - cat
+          tty: true
+          env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS 
+            value: /jenkins/jenkins-test-project.json 
+          volumeMounts: 
+          - name: jenkins-serviceaccount
+            mountPath: "/jenkins" 
+            readOnly: true
+        volumes:
+        - name: jenkins-serviceaccount
+          secret:
+            secretName: jenkins-serviceaccount 
+  """
+
+    }
+  }
+
+  stages {
+    stage('Code Checkout from GitHub') {
+      steps {
+        container('terratest') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "https://github.com/andycockers/kubernetes"
+        }
+            }
+}
+
+    stage('Initialise Terratest') {
+      steps {
+        container('terratest') {
+        sh "cd terratest/gcp/compute-instance && go mod init github.com/gruntwork-io/terratest/tree/master/modules/terraform"
+      }
+      }
+    }
+
+    stage('Run Terratest') {
+      steps {
+        container('terratest') {
+        sh "cd terratest/gcp/compute-instance && go test"
+      }
+        }
+      }
+    }
+  }
