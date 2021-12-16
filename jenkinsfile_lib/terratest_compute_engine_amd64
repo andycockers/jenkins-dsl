@@ -27,6 +27,13 @@ pipeline {
           - name: jenkins-serviceaccount
             mountPath: "/jenkins" 
             readOnly: true
+        - name: jnlp
+          image: jenkins/inbound-agent
+          tty: true
+          args: ["^${computer.jnlpmac} ^${computer.name}"]
+          env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS 
+            value: /jenkins/jenkins-test-project.json
         volumes:
         - name: jenkins-serviceaccount
           secret:
