@@ -12,7 +12,7 @@ pipelineJob("terratest/terratest-compute-engine") {
 			scm {
 				git {
 					remote {
-						url("https://github.com:andycockers/jenkins-dsl")
+						url("https://github.com/andycockers/jenkins-dsl")
 						credentials("github")
 					}
 					branch("*/main")
