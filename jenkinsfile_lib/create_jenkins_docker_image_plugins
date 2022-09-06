@@ -45,7 +45,7 @@ stage('Docker build image') {
         container('docker-jenkins-agent') {
         sh '''cd dockerfiles/jenkins-plugins
               docker buildx create --name container --driver docker-container
-              docker buildx build image build --load -t calmmopey/jenkins-arm64:2.346.3-lts-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
+              docker buildx build --load -t calmmopey/jenkins-arm64:2.346.3-lts-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
               '''
       }
       }
