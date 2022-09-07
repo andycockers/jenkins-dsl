@@ -29,3 +29,4 @@ pipelineJob("dsl-jobs/create-jenkins-docker-image-plugins") {
 	}
 	disabled(false)
 }
+}
