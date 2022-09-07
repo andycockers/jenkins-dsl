@@ -17,12 +17,7 @@ pipelineJob("dsl-jobs/create-jenkins-docker-image-plugins") {
 						credentials("github")
 					}
 					branch("*/main")
-					configure {
-                        it / extensions / "hudson.plugins.git.extensions.impl.PathRestriction" {
-                            includedRegions("dockerfiles/jenkins-plugins/*.*")
-                            excludedRegions('')
-                        }
-				}
+					
 			}
 			scriptPath("jenkinsfile_lib/create_jenkins_docker_image_plugins")
 		}
