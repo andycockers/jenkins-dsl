@@ -36,12 +36,6 @@ pipeline {
               git branch: "master",
               credentialsId: "github",
               url: "git@github.com:andycockers/gcp-automation.git"
-              configure {
-                        it / extensions / "hudson.plugins.git.extensions.impl.PathRestriction" {
-                            includedRegions("dockerfiles/jenkins-plugins/*.*")
-                            excludedRegions('')
-                        }
-				}
         }
             }
 }
