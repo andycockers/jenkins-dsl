@@ -2,7 +2,7 @@ pipelineJob("dsl-jobs/create-jenkins-docker-image-plugins") {
 	description()
 	keepDependencies(false)
 	properties {
-		nextBuildNumber(7)
+		nextBuildNumber(1)
 	}
 
 	definition {
