@@ -4,9 +4,6 @@ pipelineJob("dsl-jobs/create-jenkins-docker-image-plugins") {
 	properties {
 		nextBuildNumber(1)
 	}
-	triggers {
-        scm("H/5 * * * *")
-    }
 
 	definition {
 		cpsScm {
