@@ -47,7 +47,7 @@ stage('Docker build image') {
         sh '''cd dockerfiles/get-iplayer
               docker login -u calmmopey -p $DOCKERHUB
               docker buildx create --name container --driver docker-container
-              docker buildx build --push -t calmmopey/get-iplayer:${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
+              docker buildx build --push -t calmmopey/get-iplayer:${BUILD_NUMBER} --platform linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
               '''
       }
         }
