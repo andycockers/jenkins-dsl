@@ -1,0 +1,58 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent { kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: docker-jenkins-agent
+            image: docker
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock
+        """ }
+  }
+
+  
+  stages {
+    stage('Code Checkout from GitHub') {
+      steps {
+        container('docker-jenkins-agent') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "git@github.com:andycockers/gcp-automation.git"
+        }
+            }
+}
+
+stage('Docker build image') {
+      steps {
+        container('docker-jenkins-agent') {
+        withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB')]){
+        sh '''cd dockerfiles/get-iplayer
+              docker login -u calmmopey -p $DOCKERHUB
+              docker buildx create --name container --driver docker-container
+              docker buildx build --push -t calmmopey/get-iplayer:${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
+              '''
+      }
+        }
+      }
+    }
+  }
+}
+
