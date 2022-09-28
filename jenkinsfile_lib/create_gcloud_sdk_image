@@ -30,6 +30,10 @@ pipeline {
     }
   }
 
+parameters {
+    string(name: 'VERSION', defaultValue: '', description: 'The Gcloud CLI version')
+  }
+
 stages {
     stage('Code Checkout from GitHub') {
       steps {
@@ -41,16 +45,17 @@ stages {
             }
 }
 
-stage('Run Packer') {
+stage('Docker build image') {
       steps {
         container('docker-jenkins-agent') {
-        withCredentials([string(credentialsId: 'dockerhub', variable: 'PASSWORD')]) {
-        sh "cd packer/create-gcloud-sdk-image && packer build create-gcloud-sdk-image.json"
-        sh "docker login --username calmmopey --password $PASSWORD"
-        sh "docker push calmmopey/gcloud-sdk"
-}
+        withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB')]){
+        sh '''cd dockerfiles/gcloud-sdk-alpine
+              docker login -u calmmopey -p $DOCKERHUB
+              docker buildx create --name container --driver docker-container
+              docker buildx build --push -t calmmopey/gcloud-sdk-$VERSION --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
+              '''
       }
+        }
       }
     }
-  }
 }
