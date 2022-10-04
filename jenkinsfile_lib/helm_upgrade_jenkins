@@ -20,7 +20,7 @@ pipeline {
           containers:
           - name: docker-jenkins-agent
             image: calmmopey/alpine-ssh
-            tag: "1"
+            tag: 1
             command:
             - cat
             tty: true
