@@ -3,11 +3,6 @@
 /* import shared library */
 @Library('jenkins-dsl')_
 
-def remote = [:]
-remote.name = "node-1"
-remote.host = "blane.uk.to"
-remote.allowAnyHosts = true
-
 pipeline {
   agent { kubernetes {
       yaml """
