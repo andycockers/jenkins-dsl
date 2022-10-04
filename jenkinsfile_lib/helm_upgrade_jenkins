@@ -29,7 +29,9 @@ stage('Helm upgrade Jenkins') {
         container('docker-jenkins-agent') {
         sshagent(credentials: ['hetzner-key']) {
         sh '''
-        sh 'ssh -v ubuntu@blane.uk.to'
+        [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
+          ssh-keyscan -t rsa,dsa blane.uk.to >> ~/.ssh/known_hosts
+          ssh user@example.com
         '''
         }
       }
