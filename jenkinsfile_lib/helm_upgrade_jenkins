@@ -41,4 +41,5 @@ stage('Helm upgrade Jenkins') {
     }
   }
 }
+}
 
