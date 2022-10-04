@@ -32,11 +32,10 @@ pipeline {
 stage('Helm upgrade Jenkins') {
       steps {
         container('docker-jenkins-agent') {
-        withCredentials([sshUserPrivateKey(credentialsId: 'hetzner-key', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-          remote.user = userName
-          remote.identityFile = identity
-        sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
-      }
+        sshagent(credentials: ['hetzner-key']) {
+        sh '''
+        sh 'ssh -v ubuntu@blane.uk.to'
+        '''
         }
       }
     }
