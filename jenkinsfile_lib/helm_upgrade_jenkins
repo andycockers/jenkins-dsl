@@ -14,8 +14,7 @@ pipeline {
         spec:
           containers:
           - name: docker-jenkins-agent
-            image: calmmopey/alpine-ssh
-            tag: 1
+            image: calmmopey/alpine-ssh:1
             command:
             - cat
             tty: true
