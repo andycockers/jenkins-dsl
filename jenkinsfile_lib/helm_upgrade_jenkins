@@ -31,7 +31,6 @@ stage('Helm upgrade Jenkins') {
         sh '''
         [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
           ssh-keyscan -t rsa,dsa blane.uk.to >> ~/.ssh/known_hosts
-          ssh ubuntu@blane.uk.to
           helm upgrade jenkins jenkins/jenkins -f https://raw.githubusercontent.com/andycockers/laughing-succotash/main/helm/jenkins-arm/values1.yaml -n jenkins
         '''
         }
