@@ -7,6 +7,8 @@ def remote = [:]
 remote.name = "blane.uk.to"
 remote.host = "blane.uk.to"
 remote.allowAnyHosts = true
+remote.user = userName
+remote.identityFile = identity
 
 pipeline {
   agent { kubernetes {
@@ -33,9 +35,7 @@ stage('Helm upgrade Jenkins') {
       steps {
         container('docker-jenkins-agent') {
         withCredentials([sshUserPrivateKey(credentialsId: 'hetzner-ssh-ubuntu	', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-        remote.user = userName
-        remote.identityFile = identity
-        stage("SSH Steps Rocks!") {
+
             sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
         }
       }
