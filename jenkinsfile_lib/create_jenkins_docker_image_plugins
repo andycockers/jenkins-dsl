@@ -28,6 +28,10 @@ pipeline {
         """ }
   }
 
+parameters {
+    string(name: 'TAG', defaultValue: '', description: 'The source Jenkins image tag')
+  }
+
   
   stages {
     stage('Code Checkout from GitHub') {
@@ -47,7 +51,7 @@ stage('Docker build image') {
         sh '''cd dockerfiles/jenkins-plugins
               docker login -u calmmopey -p $DOCKERHUB
               docker buildx create --name container --driver docker-container
-              docker buildx build --push -t calmmopey/jenkins-plugins:2.361.1-lts-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
+              docker buildx build --build-arg var_name=${TAG} --push -t calmmopey/jenkins-plugins:${TAG}-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
               '''
       }
         }
