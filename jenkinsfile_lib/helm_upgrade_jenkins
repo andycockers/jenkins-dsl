@@ -23,9 +23,11 @@ pipeline {
 
 
 stages {
-    withCredentials([sshUserPrivateKey(credentialsId: 'hetzner-ssh-ubuntu', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-        stage("SSH Steps Rocks!") {
-            steps {
+    stage("SSH Steps Rocks!") {
+                  steps {
+                    container('docker-jenkins-agent') {
+          withCredentials([sshUserPrivateKey(credentialsId: 'hetzner-ssh-ubuntu', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+        
             script {
              def remote = [:]
              remote.name = 'blane.uk.to'
@@ -39,6 +41,7 @@ stages {
 }
     }
   
+}
 }
 }
 
