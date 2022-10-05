@@ -27,7 +27,7 @@ pipeline {
 stage('Helm upgrade Jenkins') {
       steps {
         container('docker-jenkins-agent') {
-        sshagent(credentials: ['hetzner-key']) {
+        sshagent(credentials: ['hetzner-ssh-ubuntu']) {
         sh '''
         [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
           ssh-keyscan -t rsa,dsa blane.uk.to >> ~/.ssh/known_hosts
