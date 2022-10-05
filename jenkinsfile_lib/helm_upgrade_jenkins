@@ -3,6 +3,11 @@
 /* import shared library */
 @Library('jenkins-dsl')_
 
+def remote = [:]
+remote.name = "blane.uk.to"
+remote.host = "blane.uk.to"
+remote.allowAnyHosts = true
+
 pipeline {
   agent { kubernetes {
       yaml """
@@ -27,12 +32,11 @@ pipeline {
 stage('Helm upgrade Jenkins') {
       steps {
         container('docker-jenkins-agent') {
-        sshagent(credentials: ['hetzner-ssh-ubuntu']) {
-        sh '''
-        [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
-          ssh-keyscan -t rsa,dsa blane.uk.to >> ~/.ssh/known_hosts
-          helm upgrade jenkins jenkins/jenkins -f https://raw.githubusercontent.com/andycockers/laughing-succotash/main/helm/jenkins-arm/values1.yaml -n jenkins
-        '''
+        withCredentials([sshUserPrivateKey(credentialsId: 'hetzner-ssh-ubuntu	', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+        remote.user = userName
+        remote.identityFile = identity
+        stage("SSH Steps Rocks!") {
+            sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
         }
       }
     }
