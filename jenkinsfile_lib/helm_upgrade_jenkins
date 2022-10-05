@@ -3,11 +3,6 @@
 /* import shared library */
 @Library('jenkins-dsl')_
 
-def remote = [:]
-remote.name = "blane.uk.to"
-remote.host = "blane.uk.to"
-remote.allowAnyHosts = true
-
 pipeline {
   agent { kubernetes {
       yaml """
@@ -25,21 +20,26 @@ pipeline {
             tty: true
         """ }
   }
+def remote = [:]
+remote.name = "blane.uk.to"
+remote.host = "blane.uk.to"
+remote.allowAnyHosts = true
 
-  
-  stages {
-withCredentials([sshUserPrivateKey(credentialsId: 'hetzner-ssh-ubuntu	', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+node {
+    withCredentials([sshUserPrivateKey(credentialsId: 'hetzner-ssh-ubuntu', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
         remote.user = userName
         remote.identityFile = identity
-stage('Helm upgrade Jenkins') {
-      steps {
-        container('docker-jenkins-agent') {
-        
-        sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
+        stage("SSH Steps Rocks!") {
+            writeFile file: 'abc.sh', text: 'ls'
+            sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
+            sshPut remote: remote, from: 'abc.sh', into: '.'
+            sshGet remote: remote, from: 'abc.sh', into: 'bac.sh', override: true
+            sshScript remote: remote, script: 'abc.sh'
+            sshRemove remote: remote, path: 'abc.sh'
         }
-      }
     }
-  }
 }
+  
+  
 }
 
