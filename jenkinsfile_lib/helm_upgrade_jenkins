@@ -28,13 +28,13 @@ pipeline {
 
   
   stages {
-
+withCredentials([sshUserPrivateKey(credentialsId: 'hetzner-ssh-ubuntu	', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+        remote.user = userName
+        remote.identityFile = identity
 stage('Helm upgrade Jenkins') {
       steps {
         container('docker-jenkins-agent') {
-        withCredentials([sshUserPrivateKey(credentialsId: 'hetzner-ssh-ubuntu	', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-        remote.user = userName
-        remote.identityFile = identity
+        
         sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
         }
       }
