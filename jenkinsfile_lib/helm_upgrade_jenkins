@@ -21,15 +21,10 @@ pipeline {
         """ }
   }
 
-parameters {
-  string(name: 'TAG', defaultValue: '', description: 'The Jenkins image tag')
-  }
-
-
 stages {
     stage("Helm upgrade Jenkins") {
                   steps {
-                    container('docker-jenkins-agent') {
+                    
           withCredentials([sshUserPrivateKey(credentialsId: 'hetzner-ssh-ubuntu', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
         
             script {
@@ -39,10 +34,10 @@ stages {
              remote.user = userName
              remote.allowAnyHosts = true
              remote.identityFile = identity
-            sshCommand remote: remote, command: 'helm upgrade jenkins jenkins/jenkins -f https://raw.githubusercontent.com/andycockers/laughing-succotash/main/helm/jenkins-arm/values1.yaml --set controller.tag=$TAG -n jenkins'
+            sshCommand remote: remote, command: 'helm upgrade jenkins jenkins/jenkins -f https://raw.githubusercontent.com/andycockers/laughing-succotash/main/helm/jenkins-arm/values1.yaml -n jenkins'
         }
     }
-}
+
     }
   
 }
