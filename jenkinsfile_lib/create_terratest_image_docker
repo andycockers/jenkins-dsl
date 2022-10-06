@@ -51,6 +51,7 @@ stage('Create Terratest image') {
               docker login -u calmmopey -p $DOCKERHUB
               docker buildx create --name container --driver docker-container
               docker buildx build --build-arg TAG=${TAG} --push -t calmmopey/terratest:${TAG}-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
+              '''
         }
       }
       }
