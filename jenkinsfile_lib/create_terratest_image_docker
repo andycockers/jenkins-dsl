@@ -51,7 +51,7 @@ stage('Create Terratest image') {
         sh '''cd dockerfiles/terratest/bullseye
               docker login -u calmmopey -p $DOCKERHUB
               docker buildx create --name container --driver docker-container
-              docker buildx build --build-arg TAG=${TAG} --build-arg TF_VER=${TF_VER} --push -t calmmopey/terratest:${TAG}-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx-test .
+              docker buildx build --build-arg TAG=${TAG} --build-arg TF_VER=${TF_VER} --push -t calmmopey/terratest:${TAG}-${BUILD_NUMBER} --platform linux/amd64 --progress=plain --builder=container -f Dockerfile-buildx-test .
               '''
         }
       }
