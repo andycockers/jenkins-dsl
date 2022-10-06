@@ -14,7 +14,7 @@ pipeline {
         spec:
           containers:
           - name: docker-jenkins-agent
-            image: calmmopey/docker-docker
+            image: docker
             command:
             - cat
             tty: true
@@ -26,6 +26,10 @@ pipeline {
             hostPath:
               path: /var/run/docker.sock
         """ }
+  }
+
+parameters {
+    string(name: 'TAG', defaultValue: '', description: 'The source Golang image tag')
   }
   
   stages {
@@ -39,10 +43,15 @@ pipeline {
             }
 }
 
-stage('Run Packer') {
+stage('Create Terratest image') {
       steps {
         container('docker-jenkins-agent') {
-        sh "cd packer/create-terratest-image && packer build create-terratest-image.json"
+        withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB')]){
+        sh '''cd dockerfiles/terratest/alpine
+              docker login -u calmmopey -p $DOCKERHUB
+              docker buildx create --name container --driver docker-container
+              docker buildx build --build-arg TAG=${TAG} --push -t calmmopey/terratest:${TAG}-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
+        }
       }
       }
     }
