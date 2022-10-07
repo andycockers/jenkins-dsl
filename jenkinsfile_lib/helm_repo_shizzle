@@ -53,7 +53,7 @@ stage('Do Git Things') {
   steps {
     withCredentials([string(credentialsId: 'github-string', variable: 'KEY')]) {
     container('git-jenkins-agent') {
-      sh "echo $KEY github"
+      sh "echo $KEY > github"
       sh "chmod 600 github"
       sh '''
       eval `ssh-agent`
