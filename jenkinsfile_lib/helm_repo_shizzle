@@ -13,8 +13,13 @@ pipeline {
             jenkins: build
         spec:
           containers:
-          - name: docker-jenkins-agent
+          - name: helm-jenkins-agent
             image: alpine/helm:3.10.0
+            command:
+            - cat
+            tty: true
+          - name: git-jenkins-agent
+            image: alpine/git
             command:
             - cat
             tty: true
@@ -24,7 +29,7 @@ pipeline {
   stages {
     stage('Code Checkout from GitHub') {
       steps {
-        container('docker-jenkins-agent') {
+        container('git-jenkins-agent') {
               git branch: "main",
               credentialsId: "github",
               url: "git@github.com:andycockers/musical-octo-happiness.git"
@@ -34,7 +39,7 @@ pipeline {
 
 stage('Do Helm things') {
       steps {
-        container('docker-jenkins-agent') {
+        container('helm-jenkins-agent') {
         
         sh '''
            ls -la
@@ -45,12 +50,21 @@ stage('Do Helm things') {
            git add .
            git status
            git commit -m "automated commit"
-           git push --set-upstream origin main
               '''
       }
         }
       
     }
+
+stage('Do Git Things') {
+  steps {
+    container('git-jenkins-agent') {
+      sh '''
+      ls -la
+      '''
+    }
+  }
+}
   }
 }
 
