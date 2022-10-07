@@ -50,7 +50,7 @@ stage('Create Helm image') {
         sh '''cd dockerfiles/helm/alpine
               docker login -u calmmopey -p $DOCKERHUB
               docker buildx create --name container --driver docker-container
-              docker buildx build --build-arg HELM_VER=${HELM_VER} --push -t calmmopey/alpine-helm:${HELM_VER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
+              docker buildx build --no-cache --build-arg HELM_VER=${HELM_VER} --push -t calmmopey/alpine-helm:${HELM_VER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
               '''
         }
       }
