@@ -53,7 +53,7 @@ stage('Create Terratest image') {
               #docker buildx create --name container --driver docker-container
               docker run --privileged --rm tonistiigi/binfmt --install all
               #docker buildx build --build-arg TAG=${TAG} --build-arg TF_VER=${TF_VER} --push -t calmmopey/terratest:${TAG}-${BUILD_NUMBER} --platform linux/amd64 --progress=plain --builder=container -f Dockerfile-buildx-test .
-              docker buildx build --build-arg TAG=${TAG} --build-arg TF_VER=${TF_VER} --push -t calmmopey/terratest:${TAG}-${BUILD_NUMBER} --platform linux/amd64 --progress=plain -f Dockerfile-buildx .
+              docker buildx build --build-arg TAG=${TAG} --build-arg TF_VER=${TF_VER} --push -t calmmopey/terratest:${TAG}-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain -f Dockerfile-buildx .
               '''
         }
       }
