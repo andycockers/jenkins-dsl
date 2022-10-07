@@ -42,8 +42,6 @@ stage('Do Helm things') {
         container('helm-jenkins-agent') {
         
         sh '''
-           ls -la
-           git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
            helm package helm/*
            '''
       }
@@ -55,6 +53,7 @@ stage('Do Git Things') {
   steps {
     container('git-jenkins-agent') {
       sh '''
+      git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
       git status
       git stash
       git add .
