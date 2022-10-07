@@ -38,6 +38,7 @@ stage('Do Helm things') {
         
         sh '''
            helm version
+           git
               '''
       }
         }
