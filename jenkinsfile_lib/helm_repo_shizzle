@@ -57,14 +57,13 @@ stage('Do Git Things') {
       mkdir ~/.ssh && touch ~/.ssh/known_hosts
       ssh-keyscan github.com >> ~/.ssh/known_hosts
       eval `ssh-agent`
-      eval `ssh-agent`
       ssh-add $identity
       git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
       git status
       git stash
       git add .
       git status
-      git commit -m "automated commit"
+      git commit -m "automated commit" --allow-empty
       git push -u origin main
       helm repo index --url https://andycockers.github.io/musical-octo-happiness/ .
       '''
