@@ -57,7 +57,7 @@ stage('Do Git Things') {
       echo $identity > id_rsa
       chmod 600 id_rsa
       eval `ssh-agent`
-      sh-add id_rsa
+      ssh-add id_rsa
       git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
       git status
       git stash
