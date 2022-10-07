@@ -27,7 +27,7 @@ pipeline {
         container('docker-jenkins-agent') {
               git branch: "master",
               credentialsId: "github",
-              url: "git@github.com:andycockers/gcp-automation.git"
+              url: "git@github.com:andycockers/musical-octo-happiness.git"
         }
             }
 }
@@ -37,9 +37,8 @@ stage('Do Helm things') {
         container('docker-jenkins-agent') {
         
         sh '''
-           helm version
            git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
-           git status
+           helm package helm/*
               '''
       }
         }
