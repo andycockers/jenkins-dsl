@@ -41,6 +41,9 @@ stage('Do Helm things') {
            git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
            helm package helm/*
            git status
+           git add untracked
+           git commit -m "automated commit"
+           git push
               '''
       }
         }
