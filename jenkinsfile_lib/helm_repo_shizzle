@@ -65,12 +65,21 @@ stage('Do Git Things') {
       git status
       git commit -m "automated commit" --allow-empty
       git push -u origin main
-      helm repo index --url https://andycockers.github.io/musical-octo-happiness/ .
       '''
     }
   }
 }
   }
+
+stage('Helm index repo') {
+  steps {
+    container('helm-jenkins-agent') {
+      sh '''
+      helm repo index --url https://andycockers.github.io/musical-octo-happiness/ .
+      '''
+    }
+  }
+}
 }
 }
 
