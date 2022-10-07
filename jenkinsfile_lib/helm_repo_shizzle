@@ -66,6 +66,7 @@ stage('Do Git Things') {
       git status
       git commit -m "automated commit"
       git push -u origin main
+      helm repo index --url https://andycockers.github.io/musical-octo-happiness/ .
       '''
     }
   }
