@@ -45,7 +45,7 @@ stage('Do Helm things') {
            git add .
            git status
            git commit -m "automated commit"
-           git push
+           git push --set-upstream origin main
               '''
       }
         }
