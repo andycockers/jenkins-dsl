@@ -25,7 +25,7 @@ pipeline {
     stage('Code Checkout from GitHub') {
       steps {
         container('docker-jenkins-agent') {
-              git branch: "master",
+              git branch: "main",
               credentialsId: "github",
               url: "git@github.com:andycockers/musical-octo-happiness.git"
         }
@@ -37,6 +37,7 @@ stage('Do Helm things') {
         container('docker-jenkins-agent') {
         
         sh '''
+           ls -la
            git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
            helm package helm/*
               '''
