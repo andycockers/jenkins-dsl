@@ -51,10 +51,13 @@ stage('Do Helm things') {
 
 stage('Do Git Things') {
   steps {
-    sshagent(credentials: ['github']) {
+    withCredentials([string(credentialsId: 'github-string', variable: 'KEY')]) {
     container('git-jenkins-agent') {
+      sh "echo $KEY github"
+      sh "chmod 600 github"
       sh '''
-      mkdir -p ~/.ssh
+      eval `ssh-agent`
+      ssh-add github
       ssh-keyscan github.com >> ~/.ssh/known_hosts
       git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
       git status
