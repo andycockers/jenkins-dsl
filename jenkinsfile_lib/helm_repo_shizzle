@@ -80,6 +80,27 @@ stage('Helm index repo') {
     }
   }
 }
+
+stage('Update the index file') {
+  steps {
+    withCredentials([sshUserPrivateKey(credentialsId: 'github', keyFileVariable: 'identity')]) {
+    container('git-jenkins-agent') {
+      sh '''
+      eval `ssh-agent`
+      ssh-add $identity
+      #git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
+      #git status
+      #git stash
+      #git add .
+      #git status
+      #git commit -m "automated commit" --allow-empty
+      #git push -u origin main
+      '''
+    }
+  }
+}
+  }
+
 }
 }
 
