@@ -54,6 +54,7 @@ stage('Do Git Things') {
     sshagent(credentials: ['github']) {
     container('git-jenkins-agent') {
       sh '''
+      ssh-keyscan github.com >> ~/.ssh/known_hosts
       git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
       git status
       git stash
