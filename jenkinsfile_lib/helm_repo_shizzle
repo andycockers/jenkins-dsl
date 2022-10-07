@@ -38,7 +38,7 @@ stage('Do Helm things') {
         
         sh '''
            helm version
-           ls -la
+           git config --global --add safe.directory /home/jenkins/agent/workspace/dsl-jobs/helm-repo-shizzle
            git status
               '''
       }
