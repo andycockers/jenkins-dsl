@@ -34,7 +34,7 @@ stages {
              remote.user = userName
              remote.allowAnyHosts = true
              remote.identityFile = identity
-            sshCommand remote: remote, command: 'helm upgrade jenkins jenkins/jenkins -f https://raw.githubusercontent.com/andycockers/laughing-succotash/main/helm/jenkins-arm/values1.yaml -n jenkins'
+            sshCommand remote: remote, command: 'helm upgrade jenkins jenkins/jenkins -f https://raw.githubusercontent.com/andycockers/laughing-succotash/main/helm/jenkins-arm/values1.yaml -n jenkins --wait'
         }
     }
 
