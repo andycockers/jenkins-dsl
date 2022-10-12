@@ -38,7 +38,6 @@ stage('Build Santa Circles API') {
         
         sh '''cargo test
               rustup target add aarch64-unknown-linux-musl
-              rustup target add arm64-unknown-linux-musl
               cargo build --target aarch64-unknown-linux-musl --release
               '''
       
