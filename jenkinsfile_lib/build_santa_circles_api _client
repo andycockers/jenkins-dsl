@@ -1,0 +1,51 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent { kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: rust-jenkins-agent
+            image: rust:buster
+            command:
+            - cat
+            tty: true
+        """ }
+  }
+
+  stages {
+    stage('Code Checkout from GitLab') {
+      steps {
+        container('rust-jenkins-agent') {
+              git branch: "cockers",
+              credentialsId: "gitlab",
+              url: "git@gitlab.com:cockerill.andrew/santa-circles.git"
+        }
+            }
+}
+
+stage('Build Santa Circles Client') {
+      steps {
+        container('rust-jenkins-agent') {
+        
+        sh '''apt update
+              apt install musl musl-dev musl-tools -y
+              cargo run
+              #rustup target add aarch64-unknown-linux-musl
+              #cargo build --target aarch64-unknown-linux-musl --release
+              '''
+      
+        }
+      }
+    }
+  }
+}
+
