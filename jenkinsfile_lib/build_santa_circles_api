@@ -18,6 +18,18 @@ pipeline {
             command:
             - cat
             tty: true
+          - name: docker-jenkins-agent
+            image: docker
+            command:
+            - cat
+            tty: true
+            volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock
         """ }
   }
 
@@ -36,11 +48,9 @@ stage('Build Santa Circles API') {
       steps {
         container('rust-jenkins-agent') {
         
-        sh '''apt update
-              apt install musl musl-dev musl-tools build-essential -y
-              #cargo run
+        sh '''#apt update
+              #apt install musl musl-dev musl-tools build-essential -y
               rustup target add aarch64-unknown-linux-musl aarch64-unknown-linux-gnu
-              #cargo rustc --bin santa-circles-api --target aarch64-unknown-linux-gnu -- -C link-arg=-lgcc
               cargo build --target aarch64-unknown-linux-gnu --release
               ls -la target/aarch64-unknown-linux-gnu/release
               '''
