@@ -48,13 +48,24 @@ stage('Build Santa Circles API') {
       steps {
         container('rust-jenkins-agent') {
         
-        sh '''#apt update
-              #apt install musl musl-dev musl-tools build-essential -y
-              rustup target add aarch64-unknown-linux-musl aarch64-unknown-linux-gnu
+        sh '''rustup target add aarch64-unknown-linux-musl aarch64-unknown-linux-gnu
               cargo build --target aarch64-unknown-linux-gnu --release
               ls -la target/aarch64-unknown-linux-gnu/release
               '''
       
+        }
+      }
+    }
+
+stage('Docker build Santa Circles API image') {
+      steps {
+        container('docker-jenkins-agent') {
+        withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB')]){
+        sh '''docker login -u calmmopey -p $DOCKERHUB
+              docker buildx create --name container --driver docker-container
+              docker buildx build --push -t calmmopey/santa-circles-api --platform linux/arm64 --progress=plain --builder=container -f Dockerfile-arm64 .
+              '''
+      }
         }
       }
     }
