@@ -39,7 +39,7 @@ stage('Build Santa Circles API') {
         sh '''apt update
               apt install musl musl-dev musl-tools -y
               #cargo run
-              #rustup target add aarch64-unknown-linux-musl
+              rustup target add aarch64-unknown-linux-musl
               cargo rustc --bin santa-circles-api --target aarch64-unknown-linux-musl -- -C link-arg=-lgcc
               '''
       
