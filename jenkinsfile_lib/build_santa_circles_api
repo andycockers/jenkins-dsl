@@ -42,7 +42,7 @@ stage('Build Santa Circles API') {
               rustup target add aarch64-unknown-linux-musl aarch64-unknown-linux-gnu
               #cargo rustc --bin santa-circles-api --target aarch64-unknown-linux-gnu -- -C link-arg=-lgcc
               cargo build --target aarch64-unknown-linux-gnu --release
-              ls -la target/aarch64-unknown-linux-gnu
+              ls -la target/aarch64-unknown-linux-gnu/release
               '''
       
         }
