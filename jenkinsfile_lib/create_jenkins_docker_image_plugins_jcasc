@@ -18,11 +18,14 @@ pipeline {
             command:
             - cat
             tty: true
-          - name: ansible
-            image: calmmopey/ansible
             volumeMounts:
             - mountPath: /var/run/docker.sock
               name: docker-sock
+          - name: ansible
+            image: calmmopey/ansible
+            command:
+            - cat
+            tty: true
           volumes:
           - name: docker-sock
             hostPath:
