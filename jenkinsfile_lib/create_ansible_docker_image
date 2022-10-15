@@ -28,10 +28,6 @@ pipeline {
         """ }
   }
 
-parameters {
-    string(name: 'TAG', defaultValue: '', description: 'The source Jenkins image tag')
-  }
-
   
   stages {
     stage('Code Checkout from GitHub') {
