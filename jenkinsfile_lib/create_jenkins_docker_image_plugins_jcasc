@@ -1,0 +1,76 @@
+#!/usr/bin/env groovy
+
+/* import shared library */
+@Library('jenkins-dsl')_
+
+pipeline {
+  agent { kubernetes {
+      yaml """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          labels:
+            jenkins: build
+        spec:
+          containers:
+          - name: docker
+            image: docker
+            command:
+            - cat
+            tty: true
+          - name: ansible
+            image: calmmopey/ansible
+            volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock
+        """ }
+  }
+
+parameters {
+    string(name: 'TAG', defaultValue: '', description: 'The source Jenkins image tag')
+  }
+
+  
+  stages {
+    stage('Code Checkout from GitHub') {
+      steps {
+        container('docker') {
+              git branch: "master",
+              credentialsId: "github",
+              url: "git@github.com:andycockers/gcp-automation.git"
+        }
+            }
+}
+
+stage('Ansible Decrypt casc.yaml') {
+  steps {
+    container('ansible') {
+      withCredentials([string(credentialsId: 'ansible-vault', variable: 'VAULT')]) {
+        sh'''cd dockerfiles/jenkins-plugins
+             echo $VAULT > vault_pass
+             ansible-vault decrypt casc.yaml --vault-password-file=vault_pass
+             '''
+      }
+  }
+}
+
+stage('Docker build image') {
+      steps {
+        container('docker') {
+        withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB')]){
+        sh '''cd dockerfiles/jenkins-plugins
+              docker login -u calmmopey -p $DOCKERHUB
+              docker buildx create --name container --driver docker-container
+              docker buildx build --build-arg TAG=${TAG} --push -t calmmopey/jenkins-plugins-jcasc:${TAG}-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
+              '''
+      }
+        }
+      }
+    }
+  }
+}
+
