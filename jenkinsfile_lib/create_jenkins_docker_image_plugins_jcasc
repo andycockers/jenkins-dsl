@@ -57,6 +57,7 @@ stage('Ansible Decrypt casc.yaml') {
       }
   }
 }
+}
 
 stage('Docker build image') {
       steps {
