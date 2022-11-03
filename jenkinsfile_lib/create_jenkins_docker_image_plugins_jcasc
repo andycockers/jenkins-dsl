@@ -56,6 +56,7 @@ stage('Ansible Decrypt casc.yaml') {
         sh'''cd dockerfiles/jenkins-plugins
              echo $VAULT > vault_pass
              ansible-vault decrypt casc.yaml --vault-password-file=vault_pass
+             chmod 644 casc.yaml
              '''
       }
   }
