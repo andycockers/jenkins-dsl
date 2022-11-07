@@ -70,7 +70,7 @@ stage('Docker build image') {
         sh '''cd dockerfiles/jenkins-plugins
               docker login -u calmmopey -p $DOCKERHUB
               docker buildx create --name container --driver docker-container
-              docker buildx build --build-arg TAG=${TAG} --push -t calmmopey/jenkins-plugins-jcasc:${TAG}-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-buildx .
+              docker buildx build --build-arg TAG=${TAG} --push -t calmmopey/jenkins-plugins-jcasc:${TAG}-${BUILD_NUMBER} --platform linux/amd64,linux/arm64 --progress=plain --builder=container -f Dockerfile-jcasc-buildx .
               '''
       }
         }
