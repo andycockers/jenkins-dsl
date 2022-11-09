@@ -46,7 +46,8 @@ stage('Docker build image') {
         withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB')]){
         sh '''cd dockerfiles/genRSS/bullseye
               docker login -u calmmopey -p $DOCKERHUB
-              docker image build --push -t calmmopey/genrss-arm64 -f Dockerfile .
+              docker image build -t calmmopey/genrss-arm64 -f Dockerfile .
+              docker push calmmopey/genrss-arm64
               '''
       }
         }
